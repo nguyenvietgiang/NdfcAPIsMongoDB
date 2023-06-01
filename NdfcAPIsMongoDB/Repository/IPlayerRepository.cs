@@ -5,8 +5,9 @@ namespace NdfcAPIsMongoDB.Repository
     {
         Task<List<Player>> GetAllPlayers();
         Task<Player> GetPlayerById(string id);
-        Task<Player> CreatePlayer(Player player);
-        Task<bool> UpdatePlayer(string id, Player player);
+        Task<Player> CreatePlayer(Player player, IFormFile image, string host);
+        string SaveImage(IFormFile image, string host);
+        Task<bool> UpdatePlayer(string id, Player player, IFormFile image, string host);
         Task<bool> DeletePlayer(string id);
     }
 }

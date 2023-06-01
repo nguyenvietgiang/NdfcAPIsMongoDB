@@ -38,12 +38,13 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(player);
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePlayer([FromBody] PlayerDto playerDto)
+        public async Task<IActionResult> CreatePlayer([FromForm] PlayerDto playerDto)
         {
             if (playerDto == null)
             {
                 return BadRequest();
             }
+
             // tạo một classDTO không bao gồm ID để mongoDB tự tạo
             var player = new Player
             {
@@ -53,15 +54,17 @@ namespace NdfcAPIsMongoDB.Controllers
                 Position = playerDto.sPosition
             };
 
-            await _playerRepository.CreatePlayer(player);
+            // Truyền giá trị host từ HttpContext.Request.Host.ToString()
+            var host = HttpContext.Request.Host.ToString();
+            await _playerRepository.CreatePlayer(player, playerDto.Image, host);
 
             return Ok(player);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePlayer(string id, [FromBody] Player player)
+        public async Task<IActionResult> UpdatePlayer(string id, [FromForm] PlayerDto playerDto)
         {
-            if (player == null)
+            if (playerDto == null)
             {
                 return BadRequest();
             }
@@ -72,12 +75,13 @@ namespace NdfcAPIsMongoDB.Controllers
                 return NotFound();
             }
 
-            existingPlayer.Name = player.Name;
-            existingPlayer.Age = player.Age;
-            existingPlayer.Role = player.Role;
-            existingPlayer.Position = player.Position;
+            existingPlayer.Name = playerDto.sName;
+            existingPlayer.Age = playerDto.iAge;
+            existingPlayer.Role = playerDto.sRole;
+            existingPlayer.Position = playerDto.sPosition;
 
-            var updatedPlayer = await _playerRepository.UpdatePlayer(id, existingPlayer);
+            var host = HttpContext.Request.Host.ToString();
+            var updatedPlayer = await _playerRepository.UpdatePlayer(id, existingPlayer, playerDto.Image, host);
             if (!updatedPlayer)
             {
                 return StatusCode(500, "An error occurred while updating the player.");

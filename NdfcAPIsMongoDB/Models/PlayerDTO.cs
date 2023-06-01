@@ -6,5 +6,6 @@
         public int iAge { get; set; }
         public string sRole { get; set; }
         public string sPosition { get; set; }
+        public IFormFile Image { get; set; } // Thêm trường để đính kèm tệp ảnh
     }
 }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.FileProviders;
+using MongoDB.Driver;
 using NdfcAPIsMongoDB.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// cấu hình để truy cập ảnh từ upload folder từ URL
+app.UseStaticFiles();// For the wwwroot folder
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
+    RequestPath = "/uploads"
+});
 
 app.UseAuthorization();
 

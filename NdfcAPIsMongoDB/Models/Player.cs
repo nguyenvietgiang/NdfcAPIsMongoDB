@@ -19,5 +19,7 @@ public class Player
 
     [BsonElement("sPosition")]
     public string Position { get; set; }
+
+    public string sImg { get; set; } // Đường dẫn đến tệp ảnh
 }
 
