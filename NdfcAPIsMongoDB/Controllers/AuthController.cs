@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -57,10 +58,11 @@ namespace NdfcAPIsMongoDB.Controllers
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
                 var response = new LoginResponse
                 {
+                    Id= user.Id,
                     Username = user.Username,
                     Email = user.Email,
                     Role = user.Role,
-                    Token = tokenString,
+                    Token = tokenString, 
                 };
                 return Ok(response);
             }
@@ -70,6 +72,44 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] Register register)
+        {
+            if (register == null)
+            {
+                return BadRequest();
+            }
 
+            // tạo một register không bao gồm ID để mongoDB tự tạo
+            var createAccount = new Account
+            {
+                Username = register.Username,
+                Email = register.Email,
+                Password = register.Password,
+                Role = "User",
+                Status = 1
+            };
+
+            await _accountCollection.InsertOneAsync(createAccount);
+            return Ok(createAccount);
+        }
+
+        [HttpGet("userinfo")]
+        [Authorize]
+        public IActionResult GetUserInfo()
+        {
+            // Lấy thông tin người dùng từ HttpContext.User
+            var userId = User.FindFirstValue("accountId");
+            var role = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+
+            // Xử lý logic để trả về thông tin người dùng
+            var userInfo = new
+            {
+                UserId = userId,
+                Role = role
+            };
+
+            return Ok(userInfo);
+        }
     }
 }

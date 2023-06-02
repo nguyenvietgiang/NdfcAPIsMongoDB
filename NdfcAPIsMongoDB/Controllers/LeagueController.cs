@@ -17,9 +17,9 @@ namespace NdfcAPIsMongoDB.Controllers
         }
         // Các phương thức xử lý yêu cầu HTTP ở đây
         [HttpGet]
-        public async Task<IActionResult> GetAllLeague() 
+        public async Task<IActionResult> GetAllLeague(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var league = await _leagueRepository.GetAllLeague();
+            var league = await _leagueRepository.GetAllLeague(pageNumber, pageSize, searchName);
             return Ok(league);
         }
 

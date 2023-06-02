@@ -17,11 +17,11 @@ namespace NdfcAPIsMongoDB.Controllers
         }
         // Các phương thức xử lý yêu cầu HTTP ở đây
         [HttpGet]
-        public async Task<IActionResult> GetAllPlayers()
+        public async Task<IActionResult> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var players = await _playerRepository.GetAllPlayers();
-            return Ok(players);
-        }
+            var respaging = await _playerRepository.GetAllPlayers(pageNumber, pageSize, searchName);
+            return Ok(respaging);
+        } 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlayerById(string id)
