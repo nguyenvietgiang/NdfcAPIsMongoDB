@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Repository;
 
@@ -23,17 +24,23 @@ namespace NdfcAPIsMongoDB.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize] // Yêu cầu xác thực token để truy cập
         public async Task<IActionResult> GetLeagueById(string id)
         {
-            var player = await _leagueRepository.GetLeagueById(id);
+            // Kiểm tra thông tin tài khoản từ context.Items
+            var accountId = HttpContext.Items["AccountId"]?.ToString();
+            var email = HttpContext.Items["Email"]?.ToString();
 
-            if (player == null)
+            // Thực hiện các kiểm tra bổ sung với thông tin tài khoản (accountId, email)
+
+            var league = await _leagueRepository.GetLeagueById(id);
+
+            if (league == null)
             {
                 return NotFound();
             }
 
-            // Trả về kết quả thành công
-            return Ok(player);
+            return Ok(league);
         }
 
     }
