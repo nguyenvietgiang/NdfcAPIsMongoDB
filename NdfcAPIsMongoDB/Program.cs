@@ -3,7 +3,9 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using NdfcAPIsMongoDB.FileService;
 using NdfcAPIsMongoDB.Repository;
+using Syncfusion.Licensing;
 using System.Text;
 
 
@@ -58,9 +60,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my-secret-key-123"))
         };
     });
-
-
-
+// khai báo mã syncfusion phục vụ nhập/xuất file-extend
+SyncfusionLicenseProvider.RegisterLicense("MTQwNUAzMTM4MmUzNDJlMzBGT29sdENza2kyME1jUHpPNVd5enVXY1AvNVZ1SVdPQlVMNUE4R1c1M0FvPQ==");
 // khai báo để sử dụng DI
 var connectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
 var mongoClient = new MongoClient(connectionString);
@@ -70,6 +71,7 @@ builder.Services.AddSingleton(database);
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<ExcelService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

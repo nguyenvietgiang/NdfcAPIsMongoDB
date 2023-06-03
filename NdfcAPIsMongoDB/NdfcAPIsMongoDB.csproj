@@ -11,6 +11,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.19.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="6.1.0" />
+    <PackageReference Include="Syncfusion.Licensing" Version="18.4.0.30" />
+    <PackageReference Include="Syncfusion.XlsIO.Net.Core" Version="18.4.0.30" />
   </ItemGroup>
 
   <ItemGroup>
