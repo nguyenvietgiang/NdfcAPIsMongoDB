@@ -17,18 +17,18 @@ namespace NdfcAPIsMongoDB.Controllers
         }
         // Các phương thức xử lý yêu cầu HTTP ở đây
         [HttpGet]
-        public async Task<IActionResult> GetAllLeague(int pageNumber = 1, int pageSize = 10, string? searchName = null)
+        public async Task<IActionResult> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var league = await _matchRepository.GetAllMatch(pageNumber, pageSize, searchName);
-            return Ok(league);
+            var match = await _matchRepository.GetAllMatch(pageNumber, pageSize, searchName);
+            return Ok(match);
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeletePlayer(string id)
+        public async Task<IActionResult> DeleteMatch(string id)
         {
-            var existingPlayer = await _matchRepository.GetMatchById(id);
-            if (existingPlayer == null)
+            var existingMatch = await _matchRepository.GetMatchById(id);
+            if (existingMatch == null)
             {
                 return NotFound();
             }
