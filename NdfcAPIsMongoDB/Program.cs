@@ -10,7 +10,7 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -44,6 +44,17 @@ builder.Services.AddSwaggerGen(c =>
             new string[] { }
         }
     });
+});
+// cấu hình CROS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                   policy =>
+                   {
+                       policy.AllowAnyOrigin()
+                             .AllowAnyMethod()
+                             .AllowAnyHeader();
+                   });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -93,6 +104,9 @@ app.UseStaticFiles(new StaticFileOptions
             Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
     RequestPath = "/uploads"
 });
+
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
 
 app.UseAuthorization();
