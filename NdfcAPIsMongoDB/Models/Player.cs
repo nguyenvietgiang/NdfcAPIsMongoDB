@@ -21,5 +21,14 @@ public class Player
     public string Position { get; set; }
 
     public string sImg { get; set; } // Đường dẫn đến tệp ảnh
+
+    [BsonElement("sStatus")]
+    public string Status { get; set; }
+
+    [BsonElement("iRedCard")]
+    public int RedCard { get; set; }
+
+    [BsonElement("iScrored")] 
+    public int Scrored { get; set; }
 }
 

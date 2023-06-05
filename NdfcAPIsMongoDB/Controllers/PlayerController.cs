@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository;
@@ -38,6 +39,7 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(player);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreatePlayer([FromForm] PlayerDto playerDto)
         {
             if (playerDto == null)
@@ -51,7 +53,10 @@ namespace NdfcAPIsMongoDB.Controllers
                 Name = playerDto.sName,
                 Age = playerDto.iAge,
                 Role = playerDto.sRole,
-                Position = playerDto.sPosition
+                Position = playerDto.sPosition,
+                Status = "Bình thường",
+                Scrored =0,
+                RedCard =0
             };
 
             // Truyền giá trị host từ HttpContext.Request.Host.ToString()
@@ -92,6 +97,7 @@ namespace NdfcAPIsMongoDB.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePlayer(string id)
         {
             var existingPlayer = await _playerRepository.GetPlayerById(id);

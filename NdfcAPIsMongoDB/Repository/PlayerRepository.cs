@@ -3,8 +3,6 @@ using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class PlayerRepository : IPlayerRepository
 {
@@ -134,11 +132,6 @@ public class PlayerRepository : IPlayerRepository
         var filter = Builders<Player>.Filter.Eq("_id", objectId);
         var result = await _playerCollection.DeleteOneAsync(filter);
         return result.IsAcknowledged && result.DeletedCount > 0;
-    }
-
-    public Task<Player> CreatePlayer(Player player)
-    {
-        throw new NotImplementedException();
     }
 }
 
