@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 public class PlayerRepository : IPlayerRepository
 {
     private readonly IMongoCollection<Player> _playerCollection;
-
-    public PlayerRepository(IMongoDatabase database)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public PlayerRepository(IMongoDatabase database, IHttpContextAccessor httpContextAccessor)
     {
         _playerCollection = database.GetCollection<Player>("Player");
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Respaging<Player>> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
@@ -107,8 +108,8 @@ public class PlayerRepository : IPlayerRepository
         {
             image.CopyTo(stream);
         }
-
-        var imageUrl = $"{host}/{Path.Combine("uploads", fileName)}";
+        var scheme = _httpContextAccessor.HttpContext.Request.Scheme;
+        var imageUrl = $"{scheme}://{host}/uploads/{fileName}";
         return imageUrl;
     }
 

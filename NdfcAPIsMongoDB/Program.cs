@@ -17,7 +17,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+// cấu hình lấy full patch http or https cho các file
+builder.Services.AddHttpContextAccessor();
 // thêm cấu hình để có thể truyền vào token
 builder.Services.AddSwaggerGen(c =>
 {
