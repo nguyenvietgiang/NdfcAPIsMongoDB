@@ -39,7 +39,7 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(player);
         }
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreatePlayer([FromForm] PlayerDto playerDto)
         {
             if (playerDto == null)

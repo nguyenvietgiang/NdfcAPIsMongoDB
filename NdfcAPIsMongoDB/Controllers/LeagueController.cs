@@ -24,7 +24,7 @@ namespace NdfcAPIsMongoDB.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize] // Yêu cầu xác thực token để truy cập
+        [Authorize(Roles = "Admin")] // Yêu cầu xác thực token để truy cập
         public async Task<IActionResult> GetLeagueById(string id)
         {
             // Kiểm tra thông tin tài khoản từ context.Items
