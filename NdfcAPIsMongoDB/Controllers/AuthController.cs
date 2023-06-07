@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {

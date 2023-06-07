@@ -6,7 +6,7 @@ using NdfcAPIsMongoDB.Repository;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class NewsController : ControllerBase
     {

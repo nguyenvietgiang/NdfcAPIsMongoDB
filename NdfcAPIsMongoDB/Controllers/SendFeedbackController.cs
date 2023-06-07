@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class SendFeedbackController : ControllerBase
     {
