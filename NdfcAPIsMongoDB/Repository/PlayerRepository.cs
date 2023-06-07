@@ -1,8 +1,10 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository;
+using System;
 
 public class PlayerRepository : IPlayerRepository
 {
@@ -132,6 +134,23 @@ public class PlayerRepository : IPlayerRepository
         var filter = Builders<Player>.Filter.Eq("_id", objectId);
         var result = await _playerCollection.DeleteOneAsync(filter);
         return result.IsAcknowledged && result.DeletedCount > 0;
+    }
+
+    public async Task<bool> PatchPlayer(string id, JsonPatchDocument<Player> playerPatch)
+    {
+        var objectId = ObjectId.Parse(id);
+        var filter = Builders<Player>.Filter.Eq("_id", objectId);
+        var player = await _playerCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (player == null)
+        {
+            return false;
+        }
+
+        playerPatch.ApplyTo(player);
+
+        var result = await _playerCollection.ReplaceOneAsync(filter, player);
+        return true;
     }
 }
 

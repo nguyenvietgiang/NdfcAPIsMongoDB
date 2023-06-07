@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository;
@@ -95,6 +95,17 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(existingPlayer);
         }
 
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchPlayer(string id, [FromBody] JsonPatchDocument<Player> playerPatch)
+        {
+            var success = await _playerRepository.PatchPlayer(id, playerPatch);
+            if (success)
+            {
+                var patchedPlayer = await _playerRepository.GetPlayerById(id); // Lấy bản ghi đã được áp dụng các thay đổi PATCH
+                return Ok(patchedPlayer);
+            }
+            return NotFound();
+        }
 
         [HttpDelete("{id}")]
         [Authorize]

@@ -1,4 +1,5 @@
-﻿using NdfcAPIsMongoDB.Common;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 namespace NdfcAPIsMongoDB.Repository
 {
@@ -10,5 +11,7 @@ namespace NdfcAPIsMongoDB.Repository
         string SaveImage(IFormFile image, string host);
         Task<bool> UpdatePlayer(string id, Player player, IFormFile image, string host);
         Task<bool> DeletePlayer(string id);
+
+        Task<bool> PatchPlayer(string id, JsonPatchDocument<Player> playerPatch);
     }
 }
