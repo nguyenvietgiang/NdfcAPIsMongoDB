@@ -88,6 +88,7 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ExcelService>();
+builder.Services.AddScoped<IContact,ContactRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
