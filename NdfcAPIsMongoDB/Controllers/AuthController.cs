@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
 using System;
@@ -101,20 +102,27 @@ namespace NdfcAPIsMongoDB.Controllers
 
         [HttpGet("userinfo")]
         [Authorize]
-        public IActionResult GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
             // Lấy thông tin người dùng từ HttpContext.User
-            var userId = User.FindFirstValue("accountId");
-            var role = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+            var userIdClaim = User.FindFirst("accountId");
 
-            // Xử lý logic để trả về thông tin người dùng
-            var userInfo = new
+            if (userIdClaim == null)
             {
-                UserId = userId,
-                Role = role
-            };
+                return BadRequest("Không tìm thấy thông tin người dùng.");
+            }
+            var userId = userIdClaim.Value;
+            var objectId = ObjectId.Parse(userId);
+            var filter = Builders<Account>.Filter.Eq("_id", objectId);
+            var user = await _accountCollection.Find(filter).FirstOrDefaultAsync();
 
-            return Ok(userInfo);
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy người dùng.");
+            }
+
+            return Ok(user);
         }
+
     }
 }
