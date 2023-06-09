@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using NdfcAPIsMongoDB.Models;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class CommentController : ControllerBase
     {
@@ -26,8 +25,6 @@ namespace NdfcAPIsMongoDB.Controllers
             var comments = _commentsCollection.Find(filter).ToList();
             return comments;
         }
-
-
         [HttpPost]
         [Authorize]
         public ActionResult<Commnet> CreateComment(CommentDTO commentDto)
@@ -47,6 +44,26 @@ namespace NdfcAPIsMongoDB.Controllers
             _commentsCollection.InsertOne(comment);
 
             return comment;
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("{commentId}")]
+        public ActionResult DeleteComment(string commentId)
+        {
+            var userId = User.FindFirst("accountId")?.Value;
+
+            // Kiểm tra xem người dùng có quyền xóa comment hay không
+            var comment = _commentsCollection.Find(x => x.CommentId == commentId && x.UserId == userId).FirstOrDefault();
+            if (comment == null)
+            {
+                return NotFound(); // Trả về mã lỗi 404 nếu comment không tồn tại hoặc người dùng không có quyền xóa
+            }
+
+            // Xóa comment khỏi MongoDB
+            _commentsCollection.DeleteOne(x => x.CommentId == commentId);
+
+            return Ok(); // Trả về mã thành công 200 nếu xóa thành công
         }
 
     }
