@@ -37,7 +37,7 @@ namespace NdfcAPIsMongoDB.Controllers
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeletePlayer(string id)
+        public async Task<IActionResult> DeleteSlider(string id)
         {
             var existingSlider = await _sliderRepository.GetSliderById(id);
             if (existingSlider == null)

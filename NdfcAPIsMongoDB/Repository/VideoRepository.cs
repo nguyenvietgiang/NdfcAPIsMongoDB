@@ -13,6 +13,15 @@ namespace NdfcAPIsMongoDB.Repository
         {
             _videoCollection = database.GetCollection<Video>("Video");
         }
+
+        public async Task<bool> DeleteVideo(string id)
+        {
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Video>.Filter.Eq("_id", objectId);
+            var result = await _videoCollection.DeleteOneAsync(filter);
+            return result.IsAcknowledged && result.DeletedCount > 0;
+        }
+
         public async Task<Respaging<Video>> GetAllVideos(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
         {
             var filter = Builders<Video>.Filter.Empty;
@@ -57,6 +66,14 @@ namespace NdfcAPIsMongoDB.Repository
             };
 
             return respaging;
+        }
+
+        public async Task<Video> GetVideoById(string id)
+        {
+            // chuyển chuỗi string ID thành các ObjectId của mongoDB
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Video>.Filter.Eq("_id", objectId);
+            return await _videoCollection.Find(filter).FirstOrDefaultAsync();
         }
     }
 }

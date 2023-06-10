@@ -52,7 +52,7 @@ namespace NdfcAPIsMongoDB.Controllers
         [Route("{commentId}")]
         public ActionResult DeleteComment(string commentId)
         {
-            var userId = User.FindFirst("accountId")?.Value;
+            var userId = User.FindFirstValue(ClaimTypes.Name);
 
             // Kiểm tra xem người dùng có quyền xóa comment hay không
             var comment = _commentsCollection.Find(x => x.CommentId == commentId && x.UserId == userId).FirstOrDefault();
