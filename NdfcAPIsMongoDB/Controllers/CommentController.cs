@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using NdfcAPIsMongoDB.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -37,7 +38,7 @@ namespace NdfcAPIsMongoDB.Controllers
                 PostId = commentDto.PostId,
                 ParentCommentId = string.IsNullOrEmpty(commentDto.ParentCommentId) ? null : commentDto.ParentCommentId,
                 CreatedAt = DateTime.UtcNow,
-                UserId = User.FindFirst("accountId")?.Value // Trích xuất UserId từ token
+                UserId = User.FindFirstValue(ClaimTypes.Name) // Trích xuất UserName từ token
             };
 
             // Lưu comment vào MongoDB

@@ -15,6 +15,14 @@ namespace NdfcAPIsMongoDB.Repository
             _sliderCollection = database.GetCollection<Slider>("Slider");
         }
 
+        public async Task<bool> DeleteSlider(string id)
+        {
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Slider>.Filter.Eq("_id", objectId);
+            var result = await _sliderCollection.DeleteOneAsync(filter);
+            return result.IsAcknowledged && result.DeletedCount > 0;
+        }
+
         public async Task<Respaging<Slider>> GetAllSliders(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
         {
             var filter = Builders<Slider>.Filter.Empty;
@@ -59,6 +67,14 @@ namespace NdfcAPIsMongoDB.Repository
             };
 
             return respaging;
+        }
+
+        public async Task<Slider> GetSliderById(string id)
+        {
+            // chuyển chuỗi string ID thành các ObjectId của mongoDB
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Slider>.Filter.Eq("_id", objectId);
+            return await _sliderCollection.Find(filter).FirstOrDefaultAsync();
         }
     }
 }

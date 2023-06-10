@@ -81,6 +81,12 @@ namespace NdfcAPIsMongoDB.Controllers
             {
                 return BadRequest("This Email has been used");
             }
+            // kiểm tra tên
+            var existingName = await _accountCollection.Find(x => x.Username == register.Username).FirstOrDefaultAsync();
+            if (existingName != null)
+            {
+                return BadRequest("This Name has been used");
+            }
             // tạo một register không bao gồm ID để mongoDB tự tạo
             var createAccount = new Account
             {
