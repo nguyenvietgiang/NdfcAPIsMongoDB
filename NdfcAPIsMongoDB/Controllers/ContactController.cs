@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.ContactService;
+using NdfcAPIsMongoDB.Repository.PlayerService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -69,6 +70,25 @@ namespace NdfcAPIsMongoDB.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpDelete("list-id")]
+        public async Task<IActionResult> DeleteContacts(List<string> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return BadRequest("List of IDs is required.");
+            }
+
+            var deleted = await _contactRepository.DeleteContacts(ids);
+            if (deleted)
+            {
+                return Ok("Contacts deleted successfully.");
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while deleting Contacts.");
+            }
         }
     }
 }

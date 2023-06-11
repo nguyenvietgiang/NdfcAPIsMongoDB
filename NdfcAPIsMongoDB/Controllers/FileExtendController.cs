@@ -12,10 +12,10 @@ namespace NdfcAPIsMongoDB.Controllers
         private readonly ExcelService excelService;
         private readonly IMongoDatabase database;
 
-        public FileExtendController(IMongoDatabase database)
+        public FileExtendController(IMongoDatabase database, IWebHostEnvironment env)
         {
             this.database = database;
-            this.excelService = new ExcelService(database);
+            this.excelService = new ExcelService(database, env);
         }
 
         [HttpGet("{collectionType}")]
@@ -40,7 +40,6 @@ namespace NdfcAPIsMongoDB.Controllers
             {
                 using (var stream = file.OpenReadStream())
                 {
-                    var excelService = new ExcelService(database);
                     excelService.ImportExcelData(collectionType, stream);
                 }
 
@@ -52,7 +51,17 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
+        [HttpGet("dowload-template/{templateName}")]
+        public IActionResult GetExcelTemplate(string templateName)
+        {
+            byte[] templateBytes = excelService.GetExcelTemplate(templateName);
+            if (templateBytes == null)
+            {
+                return NotFound();
+            }
 
+            return File(templateBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", templateName + ".xlsx");
+        }
     }
 }
 

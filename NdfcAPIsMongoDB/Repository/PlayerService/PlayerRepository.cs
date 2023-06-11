@@ -152,5 +152,17 @@ public class PlayerRepository : IPlayerRepository
         var result = await _playerCollection.ReplaceOneAsync(filter, player);
         return result.IsAcknowledged && result.ModifiedCount > 0;
     }
+
+    public async Task<bool> DeletePlayers(List<string> ids)
+    {
+        foreach (var id in ids)
+        {
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Player>.Filter.Eq("_id", objectId);
+            var result = await _playerCollection.DeleteOneAsync(filter);
+        }
+        return true;
+    }
 }
+
 

@@ -12,5 +12,7 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
 
         Task<News> GetNewById(string id);
         Task<bool> DeleteNew(string id);
+
+        Task<bool> DeleteNews(List<string> ids);
     }
 }

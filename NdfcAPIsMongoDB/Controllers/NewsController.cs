@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.NewsService;
@@ -80,6 +79,25 @@ namespace NdfcAPIsMongoDB.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpDelete("list-id")]
+        public async Task<IActionResult> DeleteNews(List<string> ids)
+        {
+            if (ids == null || ids.Count == 0) 
+            {
+                return BadRequest("List of IDs is required.");
+            }
+
+            var deleted = await _NewsRepository.DeleteNews(ids);
+            if (deleted)
+            {
+                return Ok("News deleted successfully.");
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while deleting News.");
+            }
         }
     }
 }

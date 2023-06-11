@@ -28,6 +28,17 @@ namespace NdfcAPIsMongoDB.Repository.ContactService
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
 
+        public async Task<bool> DeleteContacts(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                var objectId = ObjectId.Parse(id);
+                var filter = Builders<Contact>.Filter.Eq("_id", objectId);
+                var result = await _contactCollection.DeleteOneAsync(filter);
+            }
+            return true;
+        }
+
         public async Task<Respaging<Contact>> GetAllContact(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
             var filter = Builders<Contact>.Filter.Empty;

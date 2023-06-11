@@ -136,6 +136,25 @@ namespace NdfcAPIsMongoDB.Controllers
             return NoContent();
         }
 
+        [HttpDelete("list-id")]
+        public async Task<IActionResult> DeletePlayers(List<string> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return BadRequest("List of IDs is required.");
+            }
+
+            var deleted = await _playerRepository.DeletePlayers(ids);
+            if (deleted)
+            {
+                return Ok("Players deleted successfully.");
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while deleting players.");
+            }
+        }
+
     }
 
 }

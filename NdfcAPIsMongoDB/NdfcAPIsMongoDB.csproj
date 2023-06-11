@@ -21,4 +21,13 @@
     <Folder Include="uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Common\ExcelTemplate\Account.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Common\ExcelTemplate\Match.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

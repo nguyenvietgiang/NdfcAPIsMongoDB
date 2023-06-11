@@ -11,5 +11,7 @@ namespace NdfcAPIsMongoDB.Repository.ContactService
         Task<Contact> GetContactById(string id);
 
         Task<bool> DeleteContact(string id);
+
+        Task<bool> DeleteContacts(List<string> ids);
     }
 }

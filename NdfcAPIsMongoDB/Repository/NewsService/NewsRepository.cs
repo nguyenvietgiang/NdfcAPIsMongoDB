@@ -39,6 +39,17 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
 
+        public async Task<bool> DeleteNews(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                var objectId = ObjectId.Parse(id);
+                var filter = Builders<News>.Filter.Eq("_id", objectId);
+                var result = await _newsCollection.DeleteOneAsync(filter);
+            }
+            return true;
+        }
+
         public async Task<Respaging<News>> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
         {
             var filter = Builders<News>.Filter.Empty;
@@ -119,5 +130,7 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
             var imageUrl = $"{scheme}://{host}/uploads/{fileName}";
             return imageUrl;
         }
+
+
     }
 }

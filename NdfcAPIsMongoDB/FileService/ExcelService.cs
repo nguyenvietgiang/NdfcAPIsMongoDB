@@ -2,15 +2,19 @@
 using NdfcAPIsMongoDB.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Data;
+using static NdfcAPIsMongoDB.FileService.ExcelService;
 
 namespace NdfcAPIsMongoDB.FileService
 {
     public class ExcelService
     {
         private readonly IMongoDatabase database;
+        private readonly string _commonFolderPath;
 
-        public ExcelService(IMongoDatabase database)
+        public ExcelService(IMongoDatabase database, IWebHostEnvironment env)
         {
+            _commonFolderPath = Path.Combine(env.ContentRootPath, "Common");
             this.database = database;
         }
 
@@ -33,12 +37,16 @@ namespace NdfcAPIsMongoDB.FileService
                     worksheet.Range["A1"].Text = "Họ Tên";
                     worksheet.Range["B1"].Text = "Chức vụ";
                     worksheet.Range["C1"].Text = "Vị trí";
+                    worksheet.Range["D1"].Text = "Tình trạng";
+                    worksheet.Range["E1"].Text = "Số bàn thắng";
                     foreach (var item in documents)
                     {
                         rowIndex++;
                         worksheet.Range[$"A{rowIndex}"].Text = item.Name;
                         worksheet.Range[$"B{rowIndex}"].Text = item.Role;
                         worksheet.Range[$"C{rowIndex}"].Text = item.Position;
+                        worksheet.Range[$"D{rowIndex}"].Text = item.Status;
+                        worksheet.Range[$"E{rowIndex}"].Number = item.Scrored;
                     }
                 }
                 else if (collectionType == "Match")
@@ -55,6 +63,23 @@ namespace NdfcAPIsMongoDB.FileService
                         worksheet.Range[$"A{rowIndex}"].Text = item.Enemy;
                         worksheet.Range[$"B{rowIndex}"].Text = item.Stadium;
                         worksheet.Range[$"C{rowIndex}"].Text = item.Time;
+                    }
+                }
+
+                else if (collectionType == "Account")
+                {
+                    var collection = database.GetCollection<Account>("Account");
+                    var documents = collection.Find(new BsonDocument()).ToList();
+                    int rowIndex = 1;
+                    worksheet.Range["A1"].Text = "Tên tài khoản";
+                    worksheet.Range["B1"].Text = "Email";
+                    worksheet.Range["C1"].Text = "Loại tài khoản";
+                    foreach (var item in documents)
+                    {
+                        rowIndex++;
+                        worksheet.Range[$"A{rowIndex}"].Text = item.Username;
+                        worksheet.Range[$"B{rowIndex}"].Text = item.Email;
+                        worksheet.Range[$"C{rowIndex}"].Text = item.Role;
                     }
                 }
 
@@ -113,10 +138,45 @@ namespace NdfcAPIsMongoDB.FileService
                         cellValue = worksheet.Range[$"A{rowIndex}"].Value;
                     }
                 }
+                else if (collectionType == "Account")
+                {
+                    var collection = database.GetCollection<Account>("Account");
+                    var rowIndex = 2; // Bắt đầu từ dòng thứ 2 (dòng tiêu đề là dòng đầu tiên)
+                    var cellValue = worksheet.Range[$"A{rowIndex}"].Value;
+                    while (cellValue != null)
+                    {
+                        var account = new Account
+                        {
+                            Username = worksheet.Range[$"A{rowIndex}"].Text,
+                            Email = worksheet.Range[$"B{rowIndex}"].Text,
+                            Password = worksheet.Range[$"D{rowIndex}"].Text,
+                            Role = "User"
+                        };
+
+                        collection.InsertOne(account);
+
+                        rowIndex++;
+                        cellValue = worksheet.Range[$"A{rowIndex}"].Value;
+                    }
+                }
             }
         }
-    
-}
+
+        public byte[] GetExcelTemplate(string templateName)
+        {
+            string templateFilePath = Path.Combine(_commonFolderPath, "ExcelTemplate", templateName + ".xlsx");
+
+            using (FileStream fileStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    fileStream.CopyTo(stream);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+    }
 }
 
 
