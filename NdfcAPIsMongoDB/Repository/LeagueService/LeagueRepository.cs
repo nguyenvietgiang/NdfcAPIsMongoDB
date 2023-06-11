@@ -3,13 +3,13 @@ using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.LeagueService
 {
     public class LeagueRepository : ILeagueRepository
     {
-        private readonly IMongoCollection<League> _leagueCollection; 
+        private readonly IMongoCollection<League> _leagueCollection;
 
-        public LeagueRepository(IMongoDatabase database) 
+        public LeagueRepository(IMongoDatabase database)
         {
             _leagueCollection = database.GetCollection<League>("League");
         }

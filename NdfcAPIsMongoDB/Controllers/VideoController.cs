@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.VideoService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

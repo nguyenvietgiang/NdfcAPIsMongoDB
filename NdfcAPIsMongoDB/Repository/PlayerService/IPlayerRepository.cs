@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-namespace NdfcAPIsMongoDB.Repository
+
+namespace NdfcAPIsMongoDB.Repository.PlayerService
 {
     public interface IPlayerRepository
     {

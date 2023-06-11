@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.PlayerService;
 using System;
 
 public class PlayerRepository : IPlayerRepository
@@ -150,7 +150,7 @@ public class PlayerRepository : IPlayerRepository
         playerPatch.ApplyTo(player);
 
         var result = await _playerCollection.ReplaceOneAsync(filter, player);
-        return true;
+        return result.IsAcknowledged && result.ModifiedCount > 0;
     }
 }
 

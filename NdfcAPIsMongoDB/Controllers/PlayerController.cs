@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.PlayerService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -98,14 +98,24 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchPlayer(string id, [FromBody] JsonPatchDocument<Player> playerPatch)
         {
+            var player = await _playerRepository.GetPlayerById(id);
+            if (player == null)
+            {
+                return NotFound("Player not found.");
+            }
+
             var success = await _playerRepository.PatchPlayer(id, playerPatch);
             if (success)
             {
                 var patchedPlayer = await _playerRepository.GetPlayerById(id); // Lấy bản ghi đã được áp dụng các thay đổi PATCH
                 return Ok(patchedPlayer);
             }
-            return NotFound();
+            else
+            {
+                return BadRequest("Failed to apply patch to the player.");
+            }
         }
+
 
         [HttpDelete("{id}")]
         [Authorize]

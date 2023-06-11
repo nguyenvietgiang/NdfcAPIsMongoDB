@@ -2,29 +2,35 @@
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
+using System.Numerics;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.ContactService
 {
-    public class MatchRepository : IMatchRepository
+    public class ContactRepository : IContact
     {
-        private readonly IMongoCollection<Match> _matchCollection;
+        private readonly IMongoCollection<Contact> _contactCollection;
 
-        public MatchRepository(IMongoDatabase database)
+        public ContactRepository(IMongoDatabase database)
         {
-            _matchCollection = database.GetCollection<Match>("Match");
+            _contactCollection = database.GetCollection<Contact>("Contact");
+        }
+        public async Task<Contact> CreateContact(Contact contact)
+        {
+            await _contactCollection.InsertOneAsync(contact);
+            return contact;
         }
 
-        public async Task<bool> DeleteMatch(string id)
+        public async Task<bool> DeleteContact(string id)
         {
             var objectId = ObjectId.Parse(id);
-            var filter = Builders<Match>.Filter.Eq("_id", objectId);
-            var result = await _matchCollection.DeleteOneAsync(filter);
+            var filter = Builders<Contact>.Filter.Eq("_id", objectId);
+            var result = await _contactCollection.DeleteOneAsync(filter);
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
 
-        public async Task<Respaging<Match>> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null)
+        public async Task<Respaging<Contact>> GetAllContact(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var filter = Builders<Match>.Filter.Empty;
+            var filter = Builders<Contact>.Filter.Empty;
 
             if (pageNumber <= 0)
             {
@@ -34,20 +40,20 @@ namespace NdfcAPIsMongoDB.Repository
             // Tìm kiếm theo tên nếu có giá trị searchName được cung cấp
             if (!string.IsNullOrEmpty(searchName))
             {
-                filter = Builders<Match>.Filter.Regex(x => x.Enemy, new BsonRegularExpression(searchName, "i"));
+                filter = Builders<Contact>.Filter.Regex(x => x.Name, new BsonRegularExpression(searchName, "i"));
             }
 
             // Thêm đoạn mã sau vào để bỏ qua điều kiện tìm kiếm khi searchName không được cung cấp
             if (string.IsNullOrEmpty(searchName))
             {
-                filter = Builders<Match>.Filter.Empty;
+                filter = Builders<Contact>.Filter.Empty;
             }
 
             // Đếm tổng số bản ghi
-            var totalRecords = await _matchCollection.CountDocumentsAsync(filter);
+            var totalRecords = await _contactCollection.CountDocumentsAsync(filter);
 
             // Phân trang và lấy dữ liệu
-            var Matchs = await _matchCollection.Find(filter)
+            var Contacts = await _contactCollection.Find(filter)
                 .Skip((pageNumber - 1) * pageSize)
                 .Limit(pageSize)
                 .ToListAsync();
@@ -56,24 +62,24 @@ namespace NdfcAPIsMongoDB.Repository
             var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
             // Tạo đối tượng Respaging để trả về
-            var respaging = new Respaging<Match>
+            var respaging = new Respaging<Contact>
             {
                 currentPage = pageNumber,
                 totalPages = totalPages,
                 pageSize = pageSize,
                 totalRecords = (int)totalRecords,
-                content = Matchs
+                content = Contacts
             };
 
             return respaging;
         }
 
-        public async Task<Match> GetMatchById(string id)
+        public async Task<Contact> GetContactById(string id)
         {
             // chuyển chuỗi string ID thành các ObjectId của mongoDB
             var objectId = ObjectId.Parse(id);
-            var filter = Builders<Match>.Filter.Eq("_id", objectId);
-            return await _matchCollection.Find(filter).FirstOrDefaultAsync();
+            var filter = Builders<Contact>.Filter.Eq("_id", objectId);
+            return await _contactCollection.Find(filter).FirstOrDefaultAsync();
         }
     }
 }

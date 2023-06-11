@@ -1,7 +1,7 @@
 ﻿using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.NewsService
 {
     public interface INewsRepository
     {
@@ -10,7 +10,7 @@ namespace NdfcAPIsMongoDB.Repository
         Task<News> CreateNew(News news, IFormFile image, string host);
         string SaveImage(IFormFile image, string host);
 
-        Task<News> GetNewById(string id); 
+        Task<News> GetNewById(string id);
         Task<bool> DeleteNew(string id);
     }
 }

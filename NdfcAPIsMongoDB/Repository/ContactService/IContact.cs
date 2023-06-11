@@ -1,7 +1,7 @@
 ﻿using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.ContactService
 {
     public interface IContact
     {

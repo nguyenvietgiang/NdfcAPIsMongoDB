@@ -1,7 +1,7 @@
 ﻿using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.SliderService
 {
     public interface ISliderRepository
     {
@@ -9,6 +9,6 @@ namespace NdfcAPIsMongoDB.Repository
 
         Task<Slider> GetSliderById(string id);
 
-        Task<bool> DeleteSlider(string id); 
+        Task<bool> DeleteSlider(string id);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.ContactService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

@@ -4,7 +4,7 @@ using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 using System.Numerics;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.NewsService
 {
     public class NewsRepository : INewsRepository
     {

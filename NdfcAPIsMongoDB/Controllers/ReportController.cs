@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.ReportService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

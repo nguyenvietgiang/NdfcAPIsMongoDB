@@ -1,14 +1,14 @@
 ﻿using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.MatchService
 {
-    public interface IMatchRepository 
+    public interface IMatchRepository
     {
         Task<Respaging<Match>> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null);
 
         Task<Match> GetMatchById(string id);
 
-        Task<bool> DeleteMatch(string id); 
+        Task<bool> DeleteMatch(string id);
     }
 }

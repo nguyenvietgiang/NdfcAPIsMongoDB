@@ -4,7 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.FileService;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.ContactService;
+using NdfcAPIsMongoDB.Repository.LeagueService;
+using NdfcAPIsMongoDB.Repository.MatchService;
+using NdfcAPIsMongoDB.Repository.NewsService;
+using NdfcAPIsMongoDB.Repository.PlayerService;
+using NdfcAPIsMongoDB.Repository.ReportService;
+using NdfcAPIsMongoDB.Repository.SliderService;
+using NdfcAPIsMongoDB.Repository.VideoService;
 using Syncfusion.Licensing;
 using System.Text;
 

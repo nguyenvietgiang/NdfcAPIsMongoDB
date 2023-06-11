@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.ReportService
 {
     public class ReportRepository : IReportRepository
     {
@@ -57,6 +57,6 @@ namespace NdfcAPIsMongoDB.Repository
             };
 
             return respaging;
-        } 
+        }
     }
 }

@@ -4,7 +4,7 @@ using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
 using System.Text.RegularExpressions;
 
-namespace NdfcAPIsMongoDB.Repository
+namespace NdfcAPIsMongoDB.Repository.SliderService
 {
     public class SliderRepository : ISliderRepository
     {

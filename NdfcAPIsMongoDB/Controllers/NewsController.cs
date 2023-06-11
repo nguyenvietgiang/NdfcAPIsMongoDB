@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.NewsService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

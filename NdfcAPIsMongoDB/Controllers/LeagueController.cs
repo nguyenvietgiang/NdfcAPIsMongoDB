@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NdfcAPIsMongoDB.Repository;
+using NdfcAPIsMongoDB.Repository.LeagueService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
