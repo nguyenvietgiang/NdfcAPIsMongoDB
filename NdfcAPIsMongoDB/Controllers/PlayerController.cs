@@ -25,22 +25,22 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             var respaging = await _playerRepository.GetAllPlayers(pageNumber, pageSize, searchName);
             return Ok(respaging);
-        } 
-
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlayerById(string id)
         {
-            // Gọi phương thức FindPlayerById từ PlayerRepository để tìm cầu thủ theo ID
-            var player = await _playerRepository.GetPlayerById(id);
+            string cacheKey = $"Player_{id}";
+
+            var player = await GetFromCache(cacheKey, () => _playerRepository.GetPlayerById(id));
 
             if (player == null)
             {
                 return NotFound();
             }
 
-            // Trả về kết quả thành công
             return Ok(player);
         }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreatePlayer([FromForm] PlayerDto playerDto)

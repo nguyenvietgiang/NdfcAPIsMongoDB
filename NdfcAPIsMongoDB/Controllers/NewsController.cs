@@ -28,14 +28,15 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNewById(string id)
         {
-            var news = await _NewsRepository.GetNewById(id);
+            string cacheKey = $"New_{id}";
+
+            var news = await GetFromCache(cacheKey, () => _NewsRepository.GetNewById(id));
 
             if (news == null)
             {
                 return NotFound();
             }
 
-            // Trả về kết quả thành công
             return Ok(news);
         }
 

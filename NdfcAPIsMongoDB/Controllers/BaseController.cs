@@ -21,12 +21,13 @@ public class BaseController : ControllerBase
         item = getItemCallback();
 
         var cacheEntryOptions = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
         _cache.Set(cacheKey, item, cacheEntryOptions);
 
         return item;
     }
+
 
     protected void LogInformation(string message)
     {

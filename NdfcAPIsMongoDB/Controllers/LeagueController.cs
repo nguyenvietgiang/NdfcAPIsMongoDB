@@ -34,7 +34,9 @@ namespace NdfcAPIsMongoDB.Controllers
 
             // Thực hiện các kiểm tra bổ sung với thông tin tài khoản (accountId, email)
 
-            var league = await _leagueRepository.GetLeagueById(id);
+            string cacheKey = $"League_{id}";
+
+            var league = await GetFromCache(cacheKey, () => _leagueRepository.GetLeagueById(id));
 
             if (league == null)
             {
@@ -43,6 +45,7 @@ namespace NdfcAPIsMongoDB.Controllers
 
             return Ok(league);
         }
+
 
     }
 }
