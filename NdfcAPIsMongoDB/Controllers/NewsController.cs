@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.NewsService;
@@ -8,11 +9,12 @@ namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class NewsController : BaseController
     {
         private readonly INewsRepository _NewsRepository;
 
-        public NewsController(INewsRepository NewsRepository)
+        public NewsController(INewsRepository NewsRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _NewsRepository = NewsRepository;
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.ContactService;
@@ -9,11 +10,12 @@ namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class ContactController : ControllerBase
+    public class ContactController : BaseController
     {
         private readonly IContact _contactRepository;
 
-        public ContactController(IContact contactRepository)
+        public ContactController(IContact contactRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _contactRepository = contactRepository;
         }
@@ -49,7 +51,6 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(string id)
         {
-            // Gọi phương thức FindPlayerById từ PlayerRepository để tìm cầu thủ theo ID
             var contact = await _contactRepository.GetContactById(id);
 
             if (contact == null)
@@ -70,6 +71,12 @@ namespace NdfcAPIsMongoDB.Controllers
             {
                 return NotFound();
             }
+            var deletedContact = await _contactRepository.DeleteContact(id);
+            if (!deletedContact)
+            {
+                return StatusCode(500, "An error occurred while deleting the contact.");
+            }
+
             return NoContent();
         }
 

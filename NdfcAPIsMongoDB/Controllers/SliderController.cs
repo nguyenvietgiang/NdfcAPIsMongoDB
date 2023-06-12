@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.SliderService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class SliderController : ControllerBase
+    public class SliderController : BaseController
     {
         private readonly ISliderRepository _sliderRepository; 
 
-        public SliderController(ISliderRepository sliderRepository)
+        public SliderController(ISliderRepository sliderRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _sliderRepository = sliderRepository; 
         }

@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.LeagueService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class LeagueController : ControllerBase
+    public class LeagueController : BaseController
     {
         private readonly ILeagueRepository _leagueRepository;
 
-        public LeagueController(ILeagueRepository leagueRepository)
+        public LeagueController(ILeagueRepository leagueRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _leagueRepository = leagueRepository;
         }

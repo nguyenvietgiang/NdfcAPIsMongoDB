@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.ReportService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class ReportController : ControllerBase
+    public class ReportController : BaseController
     {
         private readonly IReportRepository _ReportRepository;
 
-        public ReportController(IReportRepository ReportRepository)
+        public ReportController(IReportRepository ReportRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _ReportRepository = ReportRepository;
         }

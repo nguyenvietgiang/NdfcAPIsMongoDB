@@ -5,16 +5,18 @@ using NdfcAPIsMongoDB.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using NdfcAPIsMongoDB.Models.DTO;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class CommentController : ControllerBase
+    public class CommentController : BaseController
     {
         private readonly IMongoCollection<Commnet> _commentsCollection;
 
-        public CommentController(IMongoDatabase database)
+        public CommentController(IMongoDatabase database, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _commentsCollection = database.GetCollection<Commnet>("comments");
         }

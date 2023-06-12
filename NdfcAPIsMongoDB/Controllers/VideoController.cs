@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.VideoService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class VideoController : ControllerBase
+    public class VideoController : BaseController
     {
         private readonly IVideoRepository _videoRepository;
 
-        public VideoController(IVideoRepository VideoRepository)
+        public VideoController(IVideoRepository VideoRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _videoRepository = VideoRepository;
         }

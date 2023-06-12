@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.MatchService;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class MatchController : ControllerBase
+    public class MatchController : BaseController
     {
         private readonly IMatchRepository _matchRepository;
 
-        public MatchController(IMatchRepository matchRepository)
+        public MatchController(IMatchRepository matchRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        : base(cache, logger)
         {
             _matchRepository = matchRepository;
         }
