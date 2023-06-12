@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.ContactService;
 using NdfcAPIsMongoDB.Repository.PlayerService;
 

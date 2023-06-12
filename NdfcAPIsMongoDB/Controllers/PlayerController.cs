@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.PlayerService;
 
 namespace NdfcAPIsMongoDB.Controllers

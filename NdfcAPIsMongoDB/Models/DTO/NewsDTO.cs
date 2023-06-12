@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace NdfcAPIsMongoDB.Models
+namespace NdfcAPIsMongoDB.Models.DTO
 {
     public class NewsDTO
     {

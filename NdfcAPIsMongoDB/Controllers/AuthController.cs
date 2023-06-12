@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -124,6 +126,83 @@ namespace NdfcAPIsMongoDB.Controllers
 
             return Ok(user);
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateAccount(string id, Register register)
+        {
+            if (register == null)
+            {
+                return BadRequest();
+            }
+            var account = new Account
+            {
+                Id = id,
+                Username = register.Username,
+                Email = register.Email,
+                Role = "User",
+                Password = register.Password,
+                Status = 1
+            };
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Account>.Filter.Eq("_id", objectId);
+            var result = await _accountCollection.ReplaceOneAsync(filter, account);
+            return Ok(account);
+        }
+
+        [HttpDelete("list-accounts")]
+        public async Task<IActionResult> DeleteAccounts(List<string> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return BadRequest("List of IDs is required.");
+            }
+
+            foreach (var id in ids)
+            {
+                var objectId = ObjectId.Parse(id);
+                var filter = Builders<Account>.Filter.Eq("_id", objectId);
+                var result = await _accountCollection.DeleteOneAsync(filter);
+            }
+           return Ok();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateAccount(string id,JsonPatchDocument<Account> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var account = await _accountCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                patchDocument.ApplyTo(account);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("PatchError", ex.Message);
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _accountCollection.ReplaceOneAsync(x => x.Id == id, account);
+
+            return Ok(account);
+        }
+
+
 
     }
 }

@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using NdfcAPIsMongoDB.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using NdfcAPIsMongoDB.Models.DTO;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

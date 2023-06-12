@@ -1,4 +1,4 @@
-﻿namespace NdfcAPIsMongoDB.Models
+﻿namespace NdfcAPIsMongoDB.Models.DTO
 {
     public class PlayerDto
     {
