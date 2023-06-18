@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
-using NdfcAPIsMongoDB.Models.DTO;
+using NdfcAPIsMongoDB.Models;
+using System.Data;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -18,6 +20,33 @@ namespace NdfcAPIsMongoDB.Controllers
             _chatHubContext = chatHubContext;
             _chatMessages = database.GetCollection<ChatMessage>("ChatMessages");
         }
+
+        [HttpGet("messages")]
+        public async Task<IActionResult> GetMessages()
+        {
+            var messages = await _chatMessages.Find(_ => true).ToListAsync();
+
+            var connectionId = HttpContext.Connection.Id;
+            await _chatHubContext.Clients.Client(connectionId).SendAsync("ReceiveMessages", messages);
+
+            return Ok(messages);
+        }
+
+        [HttpDelete("messages/{messageId}")]
+        [Authorize(Roles = "Admin")] // chỉ có admin mới được xóa
+        public async Task<IActionResult> DeleteMessage(string messageId)
+        {
+           
+            var deleteResult = await _chatMessages.DeleteOneAsync(message => message.Id == messageId);
+
+            if (deleteResult.DeletedCount > 0)
+            {
+                await _chatHubContext.Clients.All.SendAsync("MessageDeleted", messageId);
+            }
+
+            return Ok();
+        }
+
 
         [HttpPost("send")]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest request)

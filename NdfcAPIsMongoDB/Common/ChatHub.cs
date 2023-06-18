@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using NdfcAPIsMongoDB.Models.DTO;
+using NdfcAPIsMongoDB.Models;
 
 namespace NdfcAPIsMongoDB.Common
 {
@@ -40,6 +41,24 @@ namespace NdfcAPIsMongoDB.Common
             // Gửi tin nhắn tới tất cả các client khác nhau
             await Clients.All.SendAsync("ReceiveMessage", chatMessage);
         }
+
+        public async Task GetMessages()
+        {
+            var messages = await _chatMessages.Find(_ => true).ToListAsync();
+            await Clients.Caller.SendAsync("ReceiveMessages", messages);
+        }
+
+        public async Task DeleteMessage(string messageId)
+        {
+            var objectId = ObjectId.Parse(messageId);
+            var deleteResult = await _chatMessages.DeleteOneAsync(message => message.Id == messageId);
+
+            if (deleteResult.DeletedCount > 0)
+            {
+                await Clients.All.SendAsync("MessageDeleted", objectId);
+            }
+        }
+
     }
 }
 
