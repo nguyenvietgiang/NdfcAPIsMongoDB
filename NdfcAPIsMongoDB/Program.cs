@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.FileService;
 using NdfcAPIsMongoDB.Repository.ContactService;
 using NdfcAPIsMongoDB.Repository.LeagueService;
@@ -19,7 +20,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -99,6 +100,8 @@ builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -115,12 +118,21 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads"
 });
 
+
+
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseRouting();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chathub");
+});
 
 app.Run();
