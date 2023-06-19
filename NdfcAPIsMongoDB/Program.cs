@@ -15,9 +15,18 @@ using NdfcAPIsMongoDB.Repository.SliderService;
 using NdfcAPIsMongoDB.Repository.VideoService;
 using Syncfusion.Licensing;
 using System.Text;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.File(new JsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 builder.Services.AddControllers();
@@ -25,6 +34,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
+builder.Logging.AddSerilog();
+builder.Services.AddLogging();
 // cấu hình lấy full patch http or https cho các file
 builder.Services.AddHttpContextAccessor();
 // thêm cấu hình để có thể truyền vào token
@@ -97,9 +108,9 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
+
+
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
