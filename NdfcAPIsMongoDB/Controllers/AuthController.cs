@@ -9,6 +9,7 @@ using NdfcAPIsMongoDB.Models.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -28,47 +29,60 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var filter = Builders<Account>.Filter.Eq(a => a.Username, model.Username) &
-                         Builders<Account>.Filter.Eq(a => a.Password, model.Password);
+            var filter = Builders<Account>.Filter.Eq(a => a.Username, model.Username);
 
             var user = await _accountCollection.Find(filter).SingleOrDefaultAsync();
 
             if (user != null)
             {
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("accountId", user.Id),
-            new Claim("email", user.Email)
-        };
-                // Tạo JWT token
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-                var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                // Cấu hình token
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.Now.AddDays(1),
-                    signingCredentials: credentials);
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                var response = new LoginResponse
+                // Mã hóa mật khẩu đăng nhập bằng MD5
+                string hashedPassword;
+                using (MD5 md5 = MD5.Create())
                 {
-                    Id= user.Id,
-                    Username = user.Username,
-                    Email = user.Email,
-                    Role = user.Role,
-                    Token = tokenString, 
-                };
-                return Ok(response);
-            }
-            else
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(model.Password);
+                    byte[] hashedBytes = md5.ComputeHash(passwordBytes);
+                    hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
+
+                // So sánh mật khẩu đã mã hóa với mật khẩu đã lưu trữ
+                if (hashedPassword == user.Password)
+                {
+                    var claims = new List<Claim>
             {
-                return Unauthorized();
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("accountId", user.Id),
+                new Claim("email", user.Email)
+            };
+
+                    // Tạo JWT token
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                    var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    // Cấu hình token
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        claims: claims,
+                        expires: DateTime.Now.AddDays(1),
+                        signingCredentials: credentials);
+
+                    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                    var response = new LoginResponse
+                    {
+                        Id = user.Id,
+                        Username = user.Username,
+                        Email = user.Email,
+                        Role = user.Role,
+                        Token = tokenString,
+                    };
+                    return Ok(response);
+                }
             }
+
+            return Unauthorized();
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register register)
@@ -77,24 +91,36 @@ namespace NdfcAPIsMongoDB.Controllers
             {
                 return BadRequest();
             }
-            // kiểm tra email
-            var existingAccount = await _accountCollection.Find(x => x.Email == register.Email).FirstOrDefaultAsync();
+
+            // kiểm tra email và tên
+            var existingAccount = await _accountCollection.Find(x => x.Email == register.Email || x.Username == register.Username).FirstOrDefaultAsync();
             if (existingAccount != null)
             {
-                return BadRequest("This Email has been used");
+                if (existingAccount.Email == register.Email)
+                {
+                    return BadRequest("This Email has been used");
+                }
+                else if (existingAccount.Username == register.Username)
+                {
+                    return BadRequest("This Name has been used");
+                }
             }
-            // kiểm tra tên
-            var existingName = await _accountCollection.Find(x => x.Username == register.Username).FirstOrDefaultAsync();
-            if (existingName != null)
+
+            // Mã hóa mật khẩu bằng MD5
+            string hashedPassword;
+            using (MD5 md5 = MD5.Create())
             {
-                return BadRequest("This Name has been used");
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(register.Password);
+                byte[] hashedBytes = md5.ComputeHash(passwordBytes);
+                hashedPassword = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
+
             // tạo một register không bao gồm ID để mongoDB tự tạo
             var createAccount = new Account
             {
                 Username = register.Username,
                 Email = register.Email,
-                Password = register.Password,
+                Password = hashedPassword,
                 Role = "User",
                 Status = 1
             };
@@ -201,8 +227,5 @@ namespace NdfcAPIsMongoDB.Controllers
 
             return Ok(account);
         }
-
-
-
     }
 }

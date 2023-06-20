@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-using System.Data;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

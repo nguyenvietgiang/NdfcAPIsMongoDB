@@ -23,7 +23,7 @@ using Serilog.Formatting.Json;
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) // LogEventLevel.Information đang hoạt động ngon nhưng ghi log hơi nhiều, nặng
     .Enrich.FromLogContext()
     .WriteTo.File(new JsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
