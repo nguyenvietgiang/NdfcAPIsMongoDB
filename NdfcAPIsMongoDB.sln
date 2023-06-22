@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NdfcAPIsMongoDB", "NdfcAPIs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E43305D7-443B-4674-A393-C6ECED349073}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{31294401-D8CF-4153-BDE5-90E3517011E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{019E7773-C453-42D7-A3F2-639C8C1D3B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{019E7773-C453-42D7-A3F2-639C8C1D3B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{019E7773-C453-42D7-A3F2-639C8C1D3B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31294401-D8CF-4153-BDE5-90E3517011E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31294401-D8CF-4153-BDE5-90E3517011E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31294401-D8CF-4153-BDE5-90E3517011E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31294401-D8CF-4153-BDE5-90E3517011E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

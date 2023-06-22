@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  ndfcapismongodb:
+    image: ${DOCKER_REGISTRY-}ndfcapismongodb
+    build:
+      context: .
+      dockerfile: NdfcAPIsMongoDB/Dockerfile
