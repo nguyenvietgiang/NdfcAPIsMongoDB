@@ -5,7 +5,7 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
 {
     public interface INewsRepository
     {
-        Task<Respaging<News>> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null);
+        Task<Respaging<News>> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null, string? sortField = "CreateOn", int sortOrder = 1);
 
         Task<News> CreateNew(News news, IFormFile image, string host);
         string SaveImage(IFormFile image, string host);

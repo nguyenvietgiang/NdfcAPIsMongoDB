@@ -62,7 +62,7 @@ namespace NdfcAPIsMongoDB.FileService
                         rowIndex++;
                         worksheet.Range[$"A{rowIndex}"].Text = item.Enemy;
                         worksheet.Range[$"B{rowIndex}"].Text = item.Stadium;
-                        worksheet.Range[$"C{rowIndex}"].Text = item.Time;
+                        worksheet.Range[$"C{rowIndex}"].DateTime = item.Time;
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace NdfcAPIsMongoDB.FileService
                         {
                             Enemy = worksheet.Range[$"A{rowIndex}"].Text,
                             Stadium = worksheet.Range[$"B{rowIndex}"].Text,
-                            Time = worksheet.Range[$"C{rowIndex}"].Text
+                            Time = worksheet.Range[$"C{rowIndex}"].DateTime
                         };
 
                         collection.InsertOne(match);

@@ -22,7 +22,7 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
 
-        public async Task<Respaging<Match>> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null)
+        public async Task<Respaging<Match>> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null, DateTime? searchDate = null)
         {
             var filter = Builders<Match>.Filter.Empty;
 
@@ -37,8 +37,20 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
                 filter = Builders<Match>.Filter.Regex(x => x.Enemy, new BsonRegularExpression(searchName, "i"));
             }
 
-            // Thêm đoạn mã sau vào để bỏ qua điều kiện tìm kiếm khi searchName không được cung cấp
-            if (string.IsNullOrEmpty(searchName))
+            // Tìm kiếm theo ngày nếu có giá trị searchDate được cung cấp
+            if (searchDate.HasValue)
+            {
+                // Tạo một khoảng thời gian từ ngày bắt đầu đến ngày kết thúc của searchDate
+                var startDate = searchDate.Value.Date;
+                var endDate = searchDate.Value.Date.AddDays(1).AddTicks(-1);
+
+                // Áp dụng điều kiện tìm kiếm theo khoảng thời gian
+                var dateFilter = Builders<Match>.Filter.Gte(x => x.Time, startDate) & Builders<Match>.Filter.Lte(x => x.Time, endDate);
+                filter &= dateFilter;
+            }
+
+            // Thêm đoạn mã sau vào để bỏ qua điều kiện tìm kiếm khi không có trường sắp xếp được chỉ định
+            if (string.IsNullOrEmpty(searchName) && !searchDate.HasValue)
             {
                 filter = Builders<Match>.Filter.Empty;
             }

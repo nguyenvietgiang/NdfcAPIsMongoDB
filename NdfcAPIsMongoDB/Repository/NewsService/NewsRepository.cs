@@ -50,7 +50,7 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
             return true;
         }
 
-        public async Task<Respaging<News>> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
+        public async Task<Respaging<News>> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null, string sortField = "CreateOn", int sortOrder = 1)
         {
             var filter = Builders<News>.Filter.Empty;
 
@@ -74,8 +74,23 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
             // Đếm tổng số bản ghi
             var totalRecords = await _newsCollection.CountDocumentsAsync(filter);
 
+            // Tạo đối tượng SortDefinition để xác định sắp xếp
+            var sortDefinition = Builders<News>.Sort
+                .Ascending(sortField)
+                .Descending(sortField);
+
+            if (sortOrder == -1)
+            {
+                sortDefinition = sortDefinition.Descending(sortField);
+            }
+            else
+            {
+                sortDefinition = sortDefinition.Ascending(sortField);
+            }
+
             // Phân trang và lấy dữ liệu
             var Newss = await _newsCollection.Find(filter)
+                .Sort(sortDefinition)
                 .Skip((pageNumber - 1) * pageSize)
                 .Limit(pageSize)
                 .ToListAsync();
@@ -95,6 +110,7 @@ namespace NdfcAPIsMongoDB.Repository.NewsService
 
             return respaging;
         }
+
 
         public async Task<News> GetNewById(string id)
         {

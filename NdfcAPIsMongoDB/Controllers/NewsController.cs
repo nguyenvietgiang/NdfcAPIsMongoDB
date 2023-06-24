@@ -19,9 +19,9 @@ namespace NdfcAPIsMongoDB.Controllers
             _NewsRepository = NewsRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
+        public async Task<IActionResult> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null, string? sortField = "CreateOn", int sortOrder = 1)
         {
-            var News = await _NewsRepository.GetAllNews(pageNumber, pageSize, searchTitle);
+            var News = await _NewsRepository.GetAllNews(pageNumber, pageSize, searchTitle, sortField, sortOrder);
             return Ok(News);
         }
 

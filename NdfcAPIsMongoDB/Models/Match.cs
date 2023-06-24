@@ -16,7 +16,7 @@ namespace NdfcAPIsMongoDB.Models
         public string Stadium { get; set; }
 
         [BsonElement("dTime")]
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
 
         [BsonElement("sLeague")]
         public string League { get; set; }

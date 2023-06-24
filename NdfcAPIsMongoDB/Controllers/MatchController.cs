@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using NdfcAPIsMongoDB.Repository.MatchService;
 
+
 namespace NdfcAPIsMongoDB.Controllers
 {
     [Route("v1/api/[controller]")]
@@ -12,18 +13,33 @@ namespace NdfcAPIsMongoDB.Controllers
         private readonly IMatchRepository _matchRepository;
 
         public MatchController(IMatchRepository matchRepository, IMemoryCache cache, ILogger<BaseController> logger)
-        : base(cache, logger)
+            : base(cache, logger)
         {
             _matchRepository = matchRepository;
         }
-        // Các phương thức xử lý yêu cầu HTTP ở đây
+
+        // GET v1/api/Match
         [HttpGet]
-        public async Task<IActionResult> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null)
+        public async Task<IActionResult> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null, DateTime? searchDate = null)
         {
-            var match = await _matchRepository.GetAllMatch(pageNumber, pageSize, searchName);
+            var matches = await _matchRepository.GetAllMatch(pageNumber, pageSize, searchName, searchDate);
+            return Ok(matches);
+        }
+
+        // GET v1/api/Match/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMatchById(string id)
+        {
+            var match = await _matchRepository.GetMatchById(id);
+            if (match == null)
+            {
+                return NotFound();
+            }
+
             return Ok(match);
         }
 
+        // DELETE v1/api/Match/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteMatch(string id)
@@ -34,10 +50,10 @@ namespace NdfcAPIsMongoDB.Controllers
                 return NotFound();
             }
 
-            var deletedPlayer = await _matchRepository.DeleteMatch(id);
-            if (!deletedPlayer)
+            var deletedMatch = await _matchRepository.DeleteMatch(id);
+            if (!deletedMatch)
             {
-                return StatusCode(500, "An error occurred while deleting the player.");
+                return StatusCode(500, "An error occurred while deleting the match.");
             }
 
             return NoContent();
