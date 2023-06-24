@@ -1,4 +1,4 @@
-# Nam Định FC API
+# Nam Định FC API (ASP.Net Core WebAPI + MongoDB)
 Cung cấp Restful APIs về đội bóng đá thành phố Nam Định
 # Các chức năng chính
 - authentication & authorization, đổi mật khẩu, quên mật khẩu.
