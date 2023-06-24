@@ -20,11 +20,13 @@ namespace NdfcAPIsMongoDB.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMongoCollection<Account> _accountCollection;
+        private readonly IMongoCollection<RefreshToken> _refreshTokensCollection;
         private readonly IConfiguration _configuration;
 
         public AuthController(IMongoDatabase database, IConfiguration configuration)
         {
             _accountCollection = database.GetCollection<Account>("Account");
+            _refreshTokensCollection = database.GetCollection<RefreshToken>("RefreshToken");
             _configuration = configuration;
         }
 
@@ -46,13 +48,25 @@ namespace NdfcAPIsMongoDB.Controllers
                 // So sánh mật khẩu đã mã hóa với mật khẩu đã lưu trữ
                 if (hashedPassword == user.Password)
                 {
+                    // Tạo refresh token
+                    var refreshToken = new RefreshToken
+                    {
+                        Token = GenerateRefreshToken(),
+                        UserId = user.Id,
+                        ExpiresAt = DateTime.Now.AddDays(1)
+                    };
+
+                    // Lưu trữ refresh token vào cơ sở dữ liệu
+                    await _refreshTokensCollection.InsertOneAsync(refreshToken);
+
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim("accountId", user.Id),
-                new Claim("email", user.Email)
-            };
+                    {
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim("accountId", user.Id),
+                        new Claim("email", user.Email)
+                    };
+
                     // Tạo JWT token
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
                     var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -73,6 +87,7 @@ namespace NdfcAPIsMongoDB.Controllers
                         Email = user.Email,
                         Role = user.Role,
                         Token = tokenString,
+                        RefreshToken = refreshToken.Token
                     };
                     return Ok(response);
                 }
@@ -80,7 +95,85 @@ namespace NdfcAPIsMongoDB.Controllers
 
             return Unauthorized();
         }
-        [HttpPost("register")]
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            var filter = Builders<RefreshToken>.Filter.And(
+                Builders<RefreshToken>.Filter.Eq(rt => rt.Token, request.RefreshToken),
+                Builders<RefreshToken>.Filter.Gte(rt => rt.ExpiresAt, DateTime.Now)
+            );
+
+            var refreshToken = await _refreshTokensCollection.Find(filter).SingleOrDefaultAsync();
+            if (refreshToken == null)
+            {
+                return Unauthorized();
+            }
+
+            // Tạo mới token và refresh token
+            var user = await _accountCollection.Find(Builders<Account>.Filter.Eq(a => a.Id, refreshToken.UserId))
+                .SingleOrDefaultAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role),
+        new Claim("accountId", user.Id),
+        new Claim("email", user.Email)
+    };
+
+            // Tạo JWT token mới
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // Cấu hình token mới
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Cập nhật refresh token mới
+            var newRefreshToken = new RefreshToken
+            {
+                Id = refreshToken.Id,
+                Token = GenerateRefreshToken(),
+                UserId = refreshToken.UserId,
+                ExpiresAt = DateTime.Now.AddDays(1)
+            };
+
+            await _refreshTokensCollection.ReplaceOneAsync(Builders<RefreshToken>.Filter.Eq(rt => rt.Token, refreshToken.Token),
+                newRefreshToken);
+
+            var response = new RefreshTokenResponse
+            {
+                Token = tokenString,
+                RefreshToken = newRefreshToken.Token
+            };
+
+            return Ok(response);
+        }
+
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+    [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register register)
         {
             if (register == null)
