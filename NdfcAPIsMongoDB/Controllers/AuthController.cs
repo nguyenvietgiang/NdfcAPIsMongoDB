@@ -426,5 +426,41 @@ namespace NdfcAPIsMongoDB.Controllers
             }
             return Ok("Mật khẩu đã được reset và gửi đến địa chỉ email đã đăng ký.");
         }
+
+        [HttpGet("list-accounts")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetListAccounts()
+        {
+            var accounts = await _accountCollection.Find(_ => true).ToListAsync();
+            return Ok(accounts);
+        }
+
+
+        [HttpPut("change-status/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeStatus(string id)
+        {
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<Account>.Filter.Eq("_id", objectId);
+            var account = await _accountCollection.Find(filter).FirstOrDefaultAsync();
+
+            if (account == null)
+            {
+                return NotFound("Không tìm thấy người dùng.");
+            }
+
+            int newStatus = account.Status == 0 ? 1 : 0;
+
+            var update = Builders<Account>.Update.Set("Status", newStatus);
+            var result = await _accountCollection.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount == 0)
+            {
+                return NotFound("Không tìm thấy người dùng.");
+            }
+
+            return Ok("Trạng thái người dùng đã được thay đổi.");
+        }
+
     }
 }
