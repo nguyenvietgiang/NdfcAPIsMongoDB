@@ -10,5 +10,7 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
         Task<Match> GetMatchById(string id);
 
         Task<bool> DeleteMatch(string id);
+
+        Task<Match> CreateMatch(Match match); 
     }
 }

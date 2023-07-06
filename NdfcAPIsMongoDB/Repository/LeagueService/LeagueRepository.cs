@@ -13,10 +13,11 @@ namespace NdfcAPIsMongoDB.Repository.LeagueService
         {
             _leagueCollection = database.GetCollection<League>("League");
         }
-        //public Task<League> CreateLeague(League league)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<League> CreateLeague(League league)
+        {
+            await _leagueCollection.InsertOneAsync(league);
+            return league;
+        }
 
         //public Task<bool> DeleteLeague(string id)
         //{

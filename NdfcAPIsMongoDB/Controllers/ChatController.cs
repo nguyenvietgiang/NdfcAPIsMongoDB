@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
+using System.Security.Claims;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -48,6 +49,7 @@ namespace NdfcAPIsMongoDB.Controllers
 
 
         [HttpPost("send")]
+        [Authorize]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest request)
         {
             if (!ModelState.IsValid)
@@ -58,7 +60,7 @@ namespace NdfcAPIsMongoDB.Controllers
             // Lưu tin nhắn vào cơ sở dữ liệu
             var chatMessage = new ChatMessage
             {
-                SenderName = request.SenderName,
+                SenderName = User.FindFirstValue(ClaimTypes.Name),
                 Message = request.Message,
                 SentTime = DateTime.UtcNow
             };
@@ -73,7 +75,6 @@ namespace NdfcAPIsMongoDB.Controllers
 
     public class ChatMessageRequest
     {
-        public string SenderName { get; set; }
         public string Message { get; set; }
     }
 }

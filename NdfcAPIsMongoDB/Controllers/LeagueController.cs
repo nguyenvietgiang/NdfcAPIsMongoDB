@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Models.DTO;
+using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.LeagueService;
 
 namespace NdfcAPIsMongoDB.Controllers
@@ -46,6 +48,26 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(league);
         }
 
+        [HttpPost]
 
+        public async Task<IActionResult> CreateContact(LeagueDTO leagueDto)
+        {
+            if (leagueDto == null)
+            {
+                return BadRequest();
+            }
+            // tạo một classDTO không bao gồm ID để mongoDB tự tạo
+            var league = new League
+            {
+                Name = leagueDto.Name,
+                Reward = leagueDto.Reward,
+                Year = leagueDto.Year,
+                Status = 1,
+            };
+
+            await _leagueRepository.CreateLeague(league);
+
+            return Ok(league);
+        }
     }
 }

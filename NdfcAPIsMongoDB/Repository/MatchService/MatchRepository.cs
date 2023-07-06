@@ -87,5 +87,11 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
             var filter = Builders<Match>.Filter.Eq("_id", objectId);
             return await _matchCollection.Find(filter).FirstOrDefaultAsync();
         }
+
+        public async Task<Match> CreateMatch(Match match)
+        {
+            await _matchCollection.InsertOneAsync(match);
+            return match;
+        }
     }
 }
