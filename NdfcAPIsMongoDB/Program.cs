@@ -18,7 +18,7 @@ using System.Text;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
-
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -64,6 +64,9 @@ builder.Services.AddSwaggerGen(c =>
             new string[] { }
         }
     });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 // cấu hình CROS
 builder.Services.AddCors(options =>

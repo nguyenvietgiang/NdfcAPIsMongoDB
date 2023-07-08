@@ -30,6 +30,9 @@ namespace NdfcAPIsMongoDB.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// login and get token and refresh token
+        /// </summary>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -96,6 +99,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Unauthorized();
         }
 
+        /// <summary>
+        /// get new access token by refresh token
+        /// </summary>
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
@@ -173,7 +179,10 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
-    [HttpPost("register")]
+        /// <summary>
+        /// create new account
+        /// </summary>
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register register)
         {
             if (register == null)
@@ -215,6 +224,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(createAccount);
         }
 
+        /// <summary>
+        /// get current user infor
+        /// </summary>
         [HttpGet("userinfo")]
         [Authorize]
         public async Task<IActionResult> GetUserInfo()
@@ -239,6 +251,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// update user information
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAccount(string id, Register register)
@@ -261,6 +276,10 @@ namespace NdfcAPIsMongoDB.Controllers
             var result = await _accountCollection.ReplaceOneAsync(filter, account);
             return Ok(account);
         }
+
+        /// <summary>
+        /// delete many account by list id
+        /// </summary>
         [HttpDelete("list-accounts")]
         public async Task<IActionResult> DeleteAccounts(List<string> ids)
         {
@@ -278,6 +297,9 @@ namespace NdfcAPIsMongoDB.Controllers
            return Ok();
         }
 
+        /// <summary>
+        /// patch account 
+        /// </summary>
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAccount(string id,JsonPatchDocument<Account> patchDocument)
         {
@@ -313,6 +335,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(account);
         }
 
+        /// <summary>
+        /// change password of current user
+        /// </summary>
         [HttpPut("changepassword")]
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
@@ -373,6 +398,10 @@ namespace NdfcAPIsMongoDB.Controllers
             return passwordBuilder.ToString();
         }
 
+
+        /// <summary>
+        /// fogot password and take email new password
+        /// </summary>
         [HttpPost("forgotpassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
@@ -427,6 +456,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok("Mật khẩu đã được reset và gửi đến địa chỉ email đã đăng ký.");
         }
 
+        /// <summary>
+        /// admin get list account
+        /// </summary>
         [HttpGet("list-accounts")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetListAccounts()
@@ -435,7 +467,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(accounts);
         }
 
-
+        /// <summary>
+        /// admin change user status
+        /// </summary>
         [HttpPut("change-status/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeStatus(string id)

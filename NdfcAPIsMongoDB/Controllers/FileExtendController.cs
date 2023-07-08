@@ -21,6 +21,9 @@ namespace NdfcAPIsMongoDB.Controllers
             this.excelService = new ExcelService(database, env);
         }
 
+        /// <summary>
+        /// get excel data file by type
+        /// </summary>
         [HttpGet("{collectionType}")]
         [Authorize]
         public IActionResult ExportExcel(string collectionType)
@@ -30,6 +33,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return File(fileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NDFC.xlsx");
         }
 
+        /// <summary>
+        /// add new data though excel file with type
+        /// </summary>
         [HttpPost("import-excel/{collectionType}")]
         [Authorize]
         public IActionResult ImportExcel(string collectionType, IFormFile file)
@@ -54,6 +60,9 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
+        /// <summary>
+        /// down load excel tempalte by template name - no auth
+        /// </summary>
         [HttpGet("dowload-template/{templateName}")]
         public IActionResult GetExcelTemplate(string templateName)
         {
@@ -66,6 +75,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return File(templateBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", templateName + ".xlsx");
         }
 
+        /// <summary>
+        /// get pdf file - no auth
+        /// </summary>
         [HttpGet("pdf-invitation")]
         public IActionResult GenerateInvitation(string name, DateTime time, string reason)
         {

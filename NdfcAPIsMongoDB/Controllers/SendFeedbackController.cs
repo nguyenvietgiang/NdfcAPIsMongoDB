@@ -9,6 +9,9 @@ namespace NdfcAPIsMongoDB.Controllers
     [ApiController]
     public class SendFeedbackController : ControllerBase
     {
+        /// <summary>
+        /// send feedback to user contact by email
+        /// </summary>
         [HttpPost]
         [Authorize]
         public IActionResult Send(string mail, string bodyString)

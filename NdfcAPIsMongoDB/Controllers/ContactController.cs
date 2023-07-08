@@ -19,7 +19,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _contactRepository = contactRepository;
         }
-        // Các phương thức xử lý yêu cầu HTTP ở đây
+
+        /// <summary>
+        /// get all contact 
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllContact(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
@@ -27,6 +30,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(respaging);
         }
 
+        /// <summary>
+        /// create new contact - no auth
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateContact([FromBody] ContactDTO contactDto)
         {
@@ -48,6 +54,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(contact);
         }
 
+        /// <summary>
+        /// get contact detail by id - no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(string id)
         {
@@ -62,6 +71,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(contact);
         }
 
+        /// <summary>
+        /// delete contact by id
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteContact(string id)
@@ -80,6 +92,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// delete many contact by list contact id
+        /// </summary>
         [HttpDelete("list-id")]
         public async Task<IActionResult> DeleteContacts(List<string> ids)
         {

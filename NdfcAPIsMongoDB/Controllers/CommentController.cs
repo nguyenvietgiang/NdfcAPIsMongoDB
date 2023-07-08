@@ -21,6 +21,9 @@ namespace NdfcAPIsMongoDB.Controllers
             _commentsCollection = database.GetCollection<Commnet>("comments");
         }
 
+        /// <summary>
+        /// get all comment for a post by postID - no auth
+        /// </summary>
         [HttpGet("{postId}")]
         public ActionResult<List<Commnet>> GetCommentsByPostId(string postId)
         {
@@ -29,6 +32,10 @@ namespace NdfcAPIsMongoDB.Controllers
             var comments = _commentsCollection.Find(filter).ToList();
             return comments;
         }
+
+        /// <summary>
+        /// current user create new comment
+        /// </summary>
         [HttpPost]
         [Authorize]
         public ActionResult<Commnet> CreateComment(CommentDTO commentDto)
@@ -50,6 +57,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return comment;
         }
 
+        /// <summary>
+        /// delete comment
+        /// </summary>
         [HttpDelete]
         [Authorize]
         [Route("{commentId}")]

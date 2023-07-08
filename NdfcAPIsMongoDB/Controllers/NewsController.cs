@@ -18,6 +18,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _NewsRepository = NewsRepository;
         }
+
+        /// <summary>
+        /// get all news- no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllNews(int pageNumber = 1, int pageSize = 10, string? searchTitle = null, string? sortField = "CreateOn", int sortOrder = 1)
         {
@@ -25,6 +29,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(News);
         }
 
+        /// <summary>
+        /// get news by id - no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNewById(string id)
         {
@@ -40,6 +47,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(news);
         }
 
+        /// <summary>
+        /// create news
+        /// </summary>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateNew([FromForm] NewsDTO newsDTO)
@@ -66,6 +76,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(news);
         }
 
+        /// <summary>
+        /// delete news by id
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteNew(string id)
@@ -85,6 +98,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// delete many news by list id
+        /// </summary>
         [HttpDelete("list-id")]
         public async Task<IActionResult> DeleteNews(List<string> ids)
         {

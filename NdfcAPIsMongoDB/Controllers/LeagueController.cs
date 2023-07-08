@@ -18,7 +18,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _leagueRepository = leagueRepository;
         }
-        // Các phương thức xử lý yêu cầu HTTP ở đây
+
+        /// <summary>
+        /// get all list of tournaments the team participates in - no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllLeague(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
@@ -26,6 +29,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(league);
         }
 
+        /// <summary>
+        /// get detail of league
+        /// </summary>
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")] // Yêu cầu xác thực token để truy cập
         public async Task<IActionResult> GetLeagueById(string id)
@@ -48,9 +54,11 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(league);
         }
 
+        /// <summary>
+        /// create new league
+        /// </summary>
         [HttpPost]
-
-        public async Task<IActionResult> CreateContact(LeagueDTO leagueDto)
+        public async Task<IActionResult> CreateLeague(LeagueDTO leagueDto)
         {
             if (leagueDto == null)
             {

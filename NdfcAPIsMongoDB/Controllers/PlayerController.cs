@@ -19,13 +19,20 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _playerRepository = playerRepository;
         }
-        // Các phương thức xử lý yêu cầu HTTP ở đây
+
+        /// <summary>
+        /// get all list of player - no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
             var respaging = await _playerRepository.GetAllPlayers(pageNumber, pageSize, searchName);
             return Ok(respaging);
         }
+
+        /// <summary>
+        /// get player by id - no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlayerById(string id)
         {
@@ -41,6 +48,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(player);
         }
 
+        /// <summary>
+        /// admin create new player profile
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreatePlayer([FromForm] PlayerDto playerDto)
@@ -69,6 +79,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(player);
         }
 
+        /// <summary>
+        /// update player profile
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePlayer(string id, [FromForm] PlayerDto playerDto)
         {
@@ -98,6 +111,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(existingPlayer);
         }
 
+        /// <summary>
+        /// patch player profile
+        /// </summary>
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchPlayer(string id, [FromBody] JsonPatchDocument<Player> playerPatch)
         {
@@ -119,7 +135,9 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
-
+        /// <summary>
+        /// admin delete player
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeletePlayer(string id)
@@ -139,6 +157,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// delete many player by list id
+        /// </summary>
         [HttpDelete("list-id")]
         public async Task<IActionResult> DeletePlayers(List<string> ids)
         {

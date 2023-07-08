@@ -16,6 +16,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _videoRepository = VideoRepository;
         }
+
+        /// <summary>
+        /// get all video - no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllVideo(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
         {
@@ -23,6 +27,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(Video);
         }
 
+        /// <summary>
+        /// get video by id - no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideoById(string id)
         {
@@ -37,6 +44,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(Video);
         }
 
+        /// <summary>
+        /// delete video
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteVideo(string id)

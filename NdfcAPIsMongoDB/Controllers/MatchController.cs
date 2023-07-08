@@ -18,7 +18,9 @@ namespace NdfcAPIsMongoDB.Controllers
             _matchRepository = matchRepository;
         }
 
-        // GET v1/api/Match
+        /// <summary>
+        /// get a match - no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null, DateTime? searchDate = null)
         {
@@ -26,7 +28,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(matches);
         }
 
-        // GET v1/api/Match/{id}
+        /// <summary>
+        /// get detail match by id - no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMatchById(string id)
         {
@@ -39,7 +43,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(match);
         }
 
-        // DELETE v1/api/Match/{id}
+        /// <summary>
+        /// delete match
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteMatch(string id)

@@ -16,6 +16,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _sliderRepository = sliderRepository; 
         }
+
+        /// <summary>
+        /// get all slides - no auth
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllSlider(int pageNumber = 1, int pageSize = 10, string? searchTitle = null)
         {
@@ -23,6 +27,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(slider);
         }
 
+        /// <summary>
+        /// get slider by id -  no auth
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSliderById(string id)
         {
@@ -37,6 +44,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(slider);
         }
 
+        /// <summary>
+        /// delete slider
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteSlider(string id)

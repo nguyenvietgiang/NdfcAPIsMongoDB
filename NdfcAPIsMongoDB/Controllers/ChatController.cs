@@ -21,6 +21,9 @@ namespace NdfcAPIsMongoDB.Controllers
             _chatMessages = database.GetCollection<ChatMessage>("ChatMessages");
         }
 
+        /// <summary>
+        /// get all the messages 
+        /// </summary>
         [HttpGet("messages")]
         public async Task<IActionResult> GetMessages()
         {
@@ -32,6 +35,10 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(messages);
         }
 
+
+        /// <summary>
+        /// delete a messages by id
+        /// </summary>
         [HttpDelete("messages/{messageId}")]
         [Authorize(Roles = "Admin")] // chỉ có admin mới được xóa
         public async Task<IActionResult> DeleteMessage(string messageId)
@@ -47,7 +54,9 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// current user send messages
+        /// </summary>
         [HttpPost("send")]
         [Authorize]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessageRequest request)

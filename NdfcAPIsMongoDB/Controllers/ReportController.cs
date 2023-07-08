@@ -15,6 +15,10 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _ReportRepository = ReportRepository;
         }
+
+        /// <summary>
+        /// get statistical report parameters
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllReport(int pageNumber = 1, int pageSize = 10, string? searchSeason = null)
         {
