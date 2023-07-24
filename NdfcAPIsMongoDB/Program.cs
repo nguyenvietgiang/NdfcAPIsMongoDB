@@ -19,6 +19,11 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 using System.Reflection;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Validators;
+using NdfcAPIsMongoDB.Models.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -29,7 +34,9 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+        .AddFluentValidation(fv => fv.ImplicitlyValidateChildProperties = true);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -111,7 +118,11 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
-
+//validate
+builder.Services.AddTransient<IValidator<LeagueDTO>, LeagueValidator>();
+builder.Services.AddTransient<IValidator<PlayerDto>, PlayerValidator>();
+builder.Services.AddTransient<IValidator<ContactDTO>, ContactDTOValidator>();
+builder.Services.AddTransient<IValidator<NewsDTO>, NewsDTOValidator>();
 
 var app = builder.Build();
 
