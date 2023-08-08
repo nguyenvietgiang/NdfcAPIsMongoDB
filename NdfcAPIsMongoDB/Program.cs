@@ -24,6 +24,8 @@ using FluentValidation;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Validators;
 using NdfcAPIsMongoDB.Models.DTO;
+using NdfcAPIsMongoDB.Repository.HistoryService;
+using NdfcAPIsMongoDB.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -101,6 +103,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my-secret-key-123"))
         };
     });
+
+builder.Services.AddScoped<Query>();
+builder.Services.AddScoped<Mutation>();
+builder.Services.AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>();
+
 // khai báo mã syncfusion phục vụ nhập/xuất file-extend
 SyncfusionLicenseProvider.RegisterLicense("MTQwNUAzMTM4MmUzNDJlMzBGT29sdENza2kyME1jUHpPNVd5enVXY1AvNVZ1SVdPQlVMNUE4R1c1M0FvPQ==");
 // khai báo để sử dụng DI
@@ -118,6 +127,8 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
+builder.Services.AddScoped<IHistoryRepositorycs, HistoryRepository>();
+
 //validate
 builder.Services.AddTransient<IValidator<LeagueDTO>, LeagueValidator>();
 builder.Services.AddTransient<IValidator<PlayerDto>, PlayerValidator>();
@@ -158,5 +169,5 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ChatHub>("/chathub");
 });
-
+app.MapGraphQL("/graphql");
 app.Run();
