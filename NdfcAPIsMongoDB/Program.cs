@@ -26,6 +26,9 @@ using NdfcAPIsMongoDB.Validators;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.HistoryService;
 using NdfcAPIsMongoDB.GraphQL;
+using Hangfire;
+using Hangfire.MemoryStorage;
+using NdfcAPIsMongoDB.Common.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -88,6 +91,7 @@ builder.Services.AddCors(options =>
                              .AllowAnyHeader();
                    });
 });
+builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage());
 builder.Services.AddSignalR();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -128,7 +132,7 @@ builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
 builder.Services.AddScoped<IHistoryRepositorycs, HistoryRepository>();
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 //validate
 builder.Services.AddTransient<IValidator<LeagueDTO>, LeagueValidator>();
 builder.Services.AddTransient<IValidator<PlayerDto>, PlayerValidator>();
@@ -169,5 +173,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ChatHub>("/chathub");
 });
+app.UseHangfireServer();
+app.UseHangfireDashboard("/hangfile");
 app.MapGraphQL("/graphql");
 app.Run();

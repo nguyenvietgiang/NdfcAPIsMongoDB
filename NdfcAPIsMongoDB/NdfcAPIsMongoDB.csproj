@@ -15,6 +15,8 @@
 	
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.4" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0" />
     <PackageReference Include="HotChocolate" Version="12.0.0" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0" />
     <PackageReference Include="MailKit" Version="3.4.3" />
