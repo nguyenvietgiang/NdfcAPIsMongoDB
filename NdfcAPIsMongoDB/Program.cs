@@ -21,7 +21,6 @@ using Serilog.Formatting.Json;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Validators;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.HistoryService;
@@ -29,14 +28,24 @@ using NdfcAPIsMongoDB.GraphQL;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using NdfcAPIsMongoDB.Common.EmailService;
+using NdfcAPIsMongoDB.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
+// chuỗi kn mongoDB
+var connectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
+var mongoClient = new MongoClient(connectionString);
+var databaseName = builder.Configuration.GetValue<string>("DatabaseSettings:DatabaseName");
+var database = mongoClient.GetDatabase(databaseName);
+// logging
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) // LogEventLevel.Information đang hoạt động ngon nhưng ghi log hơi nhiều, nặng
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) 
     .Enrich.FromLogContext()
     .WriteTo.File(new JsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
+   // .WriteTo.Sink(new MongoDBSink(database, "LogEntries"))
     .CreateLogger();
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 builder.Services.AddControllers()
@@ -117,10 +126,6 @@ builder.Services.AddGraphQLServer()
 // khai báo mã syncfusion phục vụ nhập/xuất file-extend
 SyncfusionLicenseProvider.RegisterLicense("MTQwNUAzMTM4MmUzNDJlMzBGT29sdENza2kyME1jUHpPNVd5enVXY1AvNVZ1SVdPQlVMNUE4R1c1M0FvPQ==");
 // khai báo để sử dụng DI
-var connectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
-var mongoClient = new MongoClient(connectionString);
-var databaseName = builder.Configuration.GetValue<string>("DatabaseSettings:DatabaseName");
-var database = mongoClient.GetDatabase(databaseName);
 builder.Services.AddSingleton(database);
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
