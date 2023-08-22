@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Common.ElasticSearch;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.PlayerService;
@@ -13,11 +14,12 @@ namespace NdfcAPIsMongoDB.Controllers
     public class PlayerController : BaseController
     {
         private readonly IPlayerRepository _playerRepository;
-
-        public PlayerController(IPlayerRepository playerRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        private readonly IElasticsearchService _elasticsearchService;
+        public PlayerController(IPlayerRepository playerRepository, IMemoryCache cache, ILogger<BaseController> logger, IElasticsearchService elasticsearchService)
         : base(cache, logger)
         {
             _playerRepository = playerRepository;
+            _elasticsearchService = elasticsearchService;
         }
 
         /// <summary>
@@ -177,6 +179,23 @@ namespace NdfcAPIsMongoDB.Controllers
             {
                 return StatusCode(500, "An error occurred while deleting players.");
             }
+        }
+
+        [HttpGet("elastic-search")]
+        public IActionResult SearchPlayers(string query)
+        {
+            var client = _elasticsearchService.GetClient();
+
+            var searchResponse = client.Search<Player>(s => s
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.Name)
+                        .Query(query)
+                    )
+                )
+            );
+
+            return Ok(searchResponse.Documents);
         }
 
     }
