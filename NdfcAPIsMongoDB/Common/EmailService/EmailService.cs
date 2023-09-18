@@ -1,10 +1,33 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
+using MongoDB.Driver;
+using NdfcAPIsMongoDB.Models;
 
 namespace NdfcAPIsMongoDB.Common.EmailService
 {
     public class EmailService : IEmailService
     {
+        private readonly IMongoCollection<Subscriber> _subCollection;
+
+        public EmailService(IMongoDatabase database)
+        {
+            _subCollection = database.GetCollection<Subscriber>("Subscriber");
+        }
+
+        public void SendEmailsToAll(string body)
+        {
+            var emailCollection = _subCollection;
+
+            // Lấy tất cả các email từ MongoDB
+            var filter = Builders<Subscriber>.Filter.Empty;
+            var subscribers = emailCollection.Find(filter).ToList();
+
+            foreach (var subscriber in subscribers)
+            {
+                // Gửi email cho từng địa chỉ email trong danh sách
+                SendEmail(subscriber.Email, body);
+            }
+        }
         public void SendEmail(string mail, string bodyString)
         {
             var message = new MimeMessage();

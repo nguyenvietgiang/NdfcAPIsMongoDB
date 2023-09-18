@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MailKit.Net.Smtp;
-using MimeKit;
 using Microsoft.AspNetCore.Authorization;
 using Hangfire;
 using NdfcAPIsMongoDB.Common.EmailService;
@@ -28,6 +26,23 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _backgroundJobClient.Enqueue(() => _emailService.SendEmail(mail, bodyString));
             return Ok();
+        }
+
+        /// <summary>
+        /// send message to all subcribers
+        /// </summary>
+        [HttpPost("sendToAllSubcriber")]
+        public IActionResult SendEmailsToAll(string body)
+        {
+            try
+            {
+                _emailService.SendEmailsToAll(body);
+                return Ok("Emails sent to all subscribers.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to send emails: " + ex.Message);
+            }
         }
     }
 }

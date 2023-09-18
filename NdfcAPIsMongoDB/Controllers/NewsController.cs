@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Common.EmailService;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.NewsService;
@@ -12,11 +13,12 @@ namespace NdfcAPIsMongoDB.Controllers
     public class NewsController : BaseController
     {
         private readonly INewsRepository _NewsRepository;
-
-        public NewsController(INewsRepository NewsRepository, IMemoryCache cache, ILogger<BaseController> logger)
+        private readonly IEmailService _emailService;
+        public NewsController(INewsRepository NewsRepository, IEmailService emailService,IMemoryCache cache, ILogger<BaseController> logger)
         : base(cache, logger)
         {
             _NewsRepository = NewsRepository;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -72,7 +74,8 @@ namespace NdfcAPIsMongoDB.Controllers
             // Truyền giá trị host từ HttpContext.Request.Host.ToString()
             var host = HttpContext.Request.Host.ToString();
             await _NewsRepository.CreateNew(news, newsDTO.Image, host);
-
+            string body = "CLB Nam Định vừa đăng một bài viết mới: "+ newsDTO.Title;
+            _emailService.SendEmailsToAll(body);
             return Ok(news);
         }
 

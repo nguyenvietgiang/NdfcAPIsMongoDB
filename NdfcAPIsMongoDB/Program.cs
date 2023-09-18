@@ -30,6 +30,7 @@ using Hangfire.MemoryStorage;
 using NdfcAPIsMongoDB.Common.EmailService;
 using NdfcAPIsMongoDB.Middleware;
 using NdfcAPIsMongoDB.Common.ElasticSearch;
+using NdfcAPIsMongoDB.Repository.SubscribService;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -138,6 +139,7 @@ builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
 builder.Services.AddScoped<IHistoryRepositorycs, HistoryRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
 //validate
 builder.Services.AddTransient<IValidator<LeagueDTO>, LeagueValidator>();
 builder.Services.AddTransient<IValidator<PlayerDto>, PlayerValidator>();
