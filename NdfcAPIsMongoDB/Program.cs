@@ -151,7 +151,8 @@ builder.Services.Configure<ElasticsearchSettings>(builder.Configuration.GetSecti
 builder.Services.AddScoped<IElasticsearchService, ElasticsearchService>();
 
 var app = builder.Build();
-
+// ngăn chăn truy cập APIs từ một vài nguồn không uy tín
+app.UseMiddleware<DomainRestrictionMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -167,8 +168,6 @@ app.UseStaticFiles(new StaticFileOptions
             Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
     RequestPath = "/uploads"
 });
-
-
 
 app.UseCors(MyAllowSpecificOrigins);
 
