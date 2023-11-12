@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Common\WordTemplate\" />
     <Folder Include="uploads\" />
   </ItemGroup>
 

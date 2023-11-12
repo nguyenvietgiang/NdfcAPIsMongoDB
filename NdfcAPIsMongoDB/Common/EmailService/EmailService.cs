@@ -28,6 +28,40 @@ namespace NdfcAPIsMongoDB.Common.EmailService
                 SendEmail(subscriber.Email, body);
             }
         }
+        // dịch vụ gửi email kèm theo file đính kèm
+        public void SendEmailWithAttachment(string to, string body, string subject, IFormFile attachmentFile)
+        {
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse("nguyenvietgiang1110@gmail.com"));
+            message.To.Add(MailboxAddress.Parse(to));
+            message.Subject = "Câu lạc bộ bóng đá tỉnh Nam Định";
+            var builder = new BodyBuilder();
+
+            builder.TextBody = body;
+
+            if (attachmentFile != null && attachmentFile.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    // Đọc dữ liệu từ IFormFile vào MemoryStream
+                    attachmentFile.CopyTo(memoryStream);
+                    // Thêm tệp tin vào email
+                    var attachment = builder.Attachments.Add(attachmentFile.FileName, memoryStream.ToArray());
+                    // Set the attachment's Content-Disposition parameters
+                    attachment.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment);
+                    attachment.ContentDisposition.FileName = attachmentFile.FileName;
+                }
+            }
+            message.Body = builder.ToMessageBody();
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("nguyenvietgiang1110@gmail.com", "kholeeizbmxzykbs");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+        }
+
         public void SendEmail(string mail, string bodyString)
         {
             var message = new MimeMessage();

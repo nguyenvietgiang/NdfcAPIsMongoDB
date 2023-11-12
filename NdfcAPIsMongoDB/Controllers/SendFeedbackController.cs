@@ -44,6 +44,22 @@ namespace NdfcAPIsMongoDB.Controllers
                 return BadRequest("Failed to send emails: " + ex.Message);
             }
         }
+        /// <summary>
+        /// send email with file
+        /// </summary>
+        [HttpPost("sendEmailwithfile")]
+        public IActionResult SendEmailWithFile(string to, string body, string subject, IFormFile attachmentFile)
+        {
+            try
+            {
+                _emailService.SendEmailWithAttachment(to, body, subject, attachmentFile);
+                return Ok("Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
     }
 }
 

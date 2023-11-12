@@ -76,6 +76,21 @@ namespace NdfcAPIsMongoDB.Controllers
         }
 
         /// <summary>
+        /// down load word tempalte by template name - no auth
+        /// </summary>
+        [HttpGet("dowload-template-word/{templateName}")]
+        public IActionResult GetWordTemplate(string templateName)
+        {
+            byte[] templateBytes = excelService.GetWordTemplate(templateName);
+            if (templateBytes == null)
+            {
+                return NotFound();
+            }
+
+            return File(templateBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", templateName + ".docx");
+        }
+
+        /// <summary>
         /// get pdf file - no auth
         /// </summary>
         [HttpGet("pdf-invitation")]

@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Data;
 using static NdfcAPIsMongoDB.FileService.ExcelService;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NdfcAPIsMongoDB.FileService
 {
@@ -176,6 +177,19 @@ namespace NdfcAPIsMongoDB.FileService
             }
         }
 
+        public byte[] GetWordTemplate(string templateName)
+        {
+            string templateFilePath = Path.Combine(_commonFolderPath, "WordTemplate", templateName + ".docx");
+            using (FileStream fileStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (MemoryStream stream = new MemoryStream()) 
+                {
+                    fileStream.CopyTo(stream);
+                    return stream.ToArray();
+                }
+            }
+        }
+        
     }
 }
 
