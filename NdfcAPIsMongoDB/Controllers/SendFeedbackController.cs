@@ -29,6 +29,24 @@ namespace NdfcAPIsMongoDB.Controllers
         }
 
         /// <summary>
+        /// send message to all subcribers on club birthday even 
+        /// </summary>
+        [HttpPost("clubBirthday")]
+        public IActionResult BirthDayEvent()
+        {
+            try     
+            {
+                // dập lịch gửi mail đến toàn bộ thành viên nhân ngày sinh nhật câu lạc bộ
+                RecurringJob.AddOrUpdate(() => _emailService.SendEmailsToAll("Chúc mừng sinh nhật"), "40 22 12 11 *");
+                return Ok("Emails sent to all subscribers.");
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to send emails: " + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// send message to all subcribers
         /// </summary>
         [HttpPost("sendToAllSubcriber")]
@@ -44,6 +62,9 @@ namespace NdfcAPIsMongoDB.Controllers
                 return BadRequest("Failed to send emails: " + ex.Message);
             }
         }
+
+
+
         /// <summary>
         /// send email with file
         /// </summary>

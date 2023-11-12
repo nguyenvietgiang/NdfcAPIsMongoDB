@@ -21,6 +21,7 @@ namespace NdfcAPIsMongoDB.Controllers
     {
         private readonly IMongoCollection<Account> _accountCollection;
         private readonly IMongoCollection<RefreshToken> _refreshTokensCollection;
+        private readonly IMongoCollection<BlacklistToken> _blacklistTokensCollection; // Đối tượng danh sách đen
         private readonly IConfiguration _configuration;
 
         public AuthController(IMongoDatabase database, IConfiguration configuration)
@@ -168,7 +169,6 @@ namespace NdfcAPIsMongoDB.Controllers
             return Ok(response);
         }
 
-
         private string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
@@ -178,6 +178,52 @@ namespace NdfcAPIsMongoDB.Controllers
                 return Convert.ToBase64String(randomNumber);
             }
         }
+
+
+        /// <summary>
+        /// logout and remove token into blacklist
+        /// </summary>
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var accessToken = HttpContext.Request.Headers["Authorization"]
+                .FirstOrDefault()?.Split(" ").Last();
+
+            // Kiểm tra và thêm access token vào danh sách đen
+            if (!string.IsNullOrEmpty(accessToken) && _blacklistTokensCollection != null)
+            {
+                await AddToBlacklistAsync(accessToken);
+                return Ok(new { message = "Logout successful" });
+            }
+
+            return BadRequest(new { message = "Access token not found" });
+        }
+
+
+        private async Task AddToBlacklistAsync(string token)
+        {
+            if (_blacklistTokensCollection == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return;
+            }
+            var filter = Builders<BlacklistToken>.Filter.Eq(t => t.Token, token);
+            var existingToken = await _blacklistTokensCollection.Find(filter).FirstOrDefaultAsync();
+            if (existingToken == null)
+            {
+                var blacklistToken = new BlacklistToken
+                {
+                    Token = token,
+                };
+                await _blacklistTokensCollection.InsertOneAsync(blacklistToken);
+            }
+        }
+
 
         /// <summary>
         /// create new account
