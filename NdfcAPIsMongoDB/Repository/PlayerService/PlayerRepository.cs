@@ -163,6 +163,28 @@ public class PlayerRepository : IPlayerRepository
         }
         return true;
     }
+
+    public async Task<Player> GetRandomPlayer()
+    {
+        // Lấy tổng số lượng cầu thủ
+        var totalPlayers = await _playerCollection.CountDocumentsAsync(Builders<Player>.Filter.Empty);
+
+        if (totalPlayers == 0)
+        {
+            return null; // Không có cầu thủ nào trong cơ sở dữ liệu
+        }
+
+        // Tạo một số nguyên ngẫu nhiên từ 0 đến (tổng số lượng cầu thủ - 1)
+        var randomIndex = new Random().Next((int)totalPlayers);
+
+        // Lấy một cầu thủ ngẫu nhiên
+        var randomPlayer = await _playerCollection.Find(Builders<Player>.Filter.Empty)
+            .Skip(randomIndex)
+            .Limit(1)
+            .FirstOrDefaultAsync();
+
+        return randomPlayer;
+    }
 }
 
 

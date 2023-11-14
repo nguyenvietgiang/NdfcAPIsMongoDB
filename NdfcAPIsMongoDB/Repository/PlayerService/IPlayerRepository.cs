@@ -13,7 +13,7 @@ namespace NdfcAPIsMongoDB.Repository.PlayerService
         Task<bool> UpdatePlayer(string id, Player player, IFormFile image, string host);
         Task<bool> DeletePlayer(string id);
         Task<bool> DeletePlayers(List<string> ids);
-
         Task<bool> PatchPlayer(string id, JsonPatchDocument<Player> playerPatch);
+        Task<Player> GetRandomPlayer();
     }
 }

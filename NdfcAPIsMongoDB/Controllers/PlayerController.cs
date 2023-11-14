@@ -181,6 +181,30 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
+        /// <summary>
+        /// gest a player of day (mini game)
+        /// </summary>
+        [HttpGet("random")]
+        public async Task<ActionResult<Player>> GetRandomPlayer()
+        {
+            try
+            {
+                var randomPlayer = await _playerRepository.GetRandomPlayer();
+
+                if (randomPlayer == null)
+                {
+                    return NotFound("There are no player in the database.");
+                }
+
+                return Ok(randomPlayer);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi theo cách phù hợp với ứng dụng của bạn
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
         [HttpGet("elastic-search")]
         public IActionResult SearchPlayers(string query)
         {
