@@ -54,7 +54,7 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             try
             {
-                _emailService.SendEmailsToAll(body);
+                _backgroundJobClient.Enqueue(() => _emailService.SendEmailsToAll(body));
                 return Ok("Emails sent to all subscribers.");
             }
             catch (Exception ex)
@@ -63,6 +63,20 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
+        [HttpPost("sendToAllSubcriberv2")]
+        public IActionResult SendEmailsToAllv2(string body)
+        {
+            try
+            {
+                // Dập lịch gửi mail đến toàn bộ thành viên lúc 10 giờ sáng hàng ngày
+                RecurringJob.AddOrUpdate(() => _emailService.SendEmailsToAll(body), "0 0 10 * * ?");
+                return Ok("Chúc ngày mới tốt lành từ clb bóng đá Nam Định.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to schedule emails: " + ex.Message);
+            }
+        }
 
 
         /// <summary>
@@ -81,6 +95,8 @@ namespace NdfcAPIsMongoDB.Controllers
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
+
+        
     }
 }
 

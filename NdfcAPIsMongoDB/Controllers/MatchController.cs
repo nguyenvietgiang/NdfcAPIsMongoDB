@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.MatchService;
+using NdfcAPIsMongoDB.Repository.PlayerService;
 
 
 namespace NdfcAPIsMongoDB.Controllers
@@ -17,6 +20,38 @@ namespace NdfcAPIsMongoDB.Controllers
         {
             _matchRepository = matchRepository;
         }
+
+        /// <summary>
+        /// create new match - no auth
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> CreateMatch([FromBody] MatchDTO matchDTO)
+        {
+            try
+            {
+                if (matchDTO == null)
+                {
+                    return BadRequest();
+                }
+                // tạo một classDTO không bao gồm ID để mongoDB tự tạo
+                var match = new Match
+                {
+                    Enemy = matchDTO.Enemy,
+                    Stadium = matchDTO.Stadium,
+                    League = matchDTO.League,
+                    Time = matchDTO.Time,
+                    Status = 0
+                };
+                await _matchRepository.CreateMatch(match);
+
+                return Ok(match);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         /// <summary>
         /// get a match - no auth

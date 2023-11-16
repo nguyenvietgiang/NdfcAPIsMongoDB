@@ -2,24 +2,31 @@
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
+using Syncfusion.XlsIO.Implementation;
 
 namespace NdfcAPIsMongoDB.Repository.MatchService
 {
     public class MatchRepository : IMatchRepository
     {
-        private readonly IMongoCollection<Match> _matchCollection;
+        private readonly IMongoCollection<Match> _matchCollection; 
+        private readonly IMongoCollection<Seat> _seatCollection;  
 
         public MatchRepository(IMongoDatabase database)
         {
             _matchCollection = database.GetCollection<Match>("Match");
+            // Thêm danh sách ghế vào cơ sở dữ liệu
+            _seatCollection = database.GetCollection<Seat>("Seat");
+
         }
 
         public async Task<bool> DeleteMatch(string id)
         {
             var objectId = ObjectId.Parse(id);
             var filter = Builders<Match>.Filter.Eq("_id", objectId);
+            var seatfilter = Builders<Seat>.Filter.Eq("MatchId", objectId);
             var result = await _matchCollection.DeleteOneAsync(filter);
-            return result.IsAcknowledged && result.DeletedCount > 0;
+            var seatDeleteResult = await _seatCollection.DeleteManyAsync(seatfilter);
+            return result.IsAcknowledged && result.DeletedCount > 0 && seatDeleteResult.IsAcknowledged;
         }
 
         public async Task<Respaging<Match>> GetAllMatch(int pageNumber = 1, int pageSize = 10, string? searchName = null, DateTime? searchDate = null)
@@ -90,7 +97,22 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
 
         public async Task<Match> CreateMatch(Match match)
         {
+            // Thêm trận đấu vào cơ sở dữ liệu
             await _matchCollection.InsertOneAsync(match);
+
+            // Tạo danh sách các ghế
+            var seats = new List<Seat>();
+            for (int i = 1; i <= 30; i++)
+            {
+                seats.Add(new Seat
+                {
+                    MatchId = match.Id,
+                    SeatNumber = i.ToString(),
+                    Status = false // Mặc định khi tạo mới, tất cả ghế đều chưa được bán
+                });
+            }
+            await _seatCollection.InsertManyAsync(seats);
+
             return match;
         }
     }
