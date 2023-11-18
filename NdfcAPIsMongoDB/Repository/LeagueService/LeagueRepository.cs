@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
+using NdfcAPIsMongoDB.Common.PagingComon;
 using NdfcAPIsMongoDB.Models;
 
 namespace NdfcAPIsMongoDB.Repository.LeagueService
@@ -8,10 +9,12 @@ namespace NdfcAPIsMongoDB.Repository.LeagueService
     public class LeagueRepository : ILeagueRepository
     {
         private readonly IMongoCollection<League> _leagueCollection;
+        private readonly IPagingComon _pagingComon;
 
-        public LeagueRepository(IMongoDatabase database)
+        public LeagueRepository(IMongoDatabase database, IPagingComon pagingCommon)
         {
             _leagueCollection = database.GetCollection<League>("League");
+            _pagingComon = pagingCommon;
         }
         public async Task<League> CreateLeague(League league)
         {
@@ -26,48 +29,7 @@ namespace NdfcAPIsMongoDB.Repository.LeagueService
 
         public async Task<Respaging<League>> GetAllLeague(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var filter = Builders<League>.Filter.Empty;
-
-            if (pageNumber <= 0)
-            {
-                pageNumber = 1;
-            }
-
-            // Tìm kiếm theo tên nếu có giá trị searchName được cung cấp
-            if (!string.IsNullOrEmpty(searchName))
-            {
-                filter = Builders<League>.Filter.Regex(x => x.Name, new BsonRegularExpression(searchName, "i"));
-            }
-
-            // Thêm đoạn mã sau vào để bỏ qua điều kiện tìm kiếm khi searchName không được cung cấp
-            if (string.IsNullOrEmpty(searchName))
-            {
-                filter = Builders<League>.Filter.Empty;
-            }
-
-            // Đếm tổng số bản ghi
-            var totalRecords = await _leagueCollection.CountDocumentsAsync(filter);
-
-            // Phân trang và lấy dữ liệu
-            var Leagues = await _leagueCollection.Find(filter)
-                .Skip((pageNumber - 1) * pageSize)
-                .Limit(pageSize)
-                .ToListAsync();
-
-            // Tính toán số trang
-            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-
-            // Tạo đối tượng Respaging để trả về
-            var respaging = new Respaging<League>
-            {
-                currentPage = pageNumber,
-                totalPages = totalPages,
-                pageSize = pageSize,
-                totalRecords = (int)totalRecords,
-                content = Leagues
-            };
-
-            return respaging;
+            return await _pagingComon.GetAllData<League>(pageNumber, pageSize, searchName);
         }
 
         public async Task<League> GetLeagueById(string id)

@@ -32,6 +32,7 @@ using NdfcAPIsMongoDB.Middleware;
 using NdfcAPIsMongoDB.Common.ElasticSearch;
 using NdfcAPIsMongoDB.Repository.SubscribService;
 using NdfcAPIsMongoDB.Repository.TiketService;
+using NdfcAPIsMongoDB.Common.PagingComon;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -127,6 +128,8 @@ builder.Services.AddGraphQLServer()
 
 // khai báo mã syncfusion phục vụ nhập/xuất file-extend
 SyncfusionLicenseProvider.RegisterLicense("MTQwNUAzMTM4MmUzNDJlMzBGT29sdENza2kyME1jUHpPNVd5enVXY1AvNVZ1SVdPQlVMNUE4R1c1M0FvPQ==");
+// phân trang
+builder.Services.AddScoped<IPagingComon, PagingCommon>();
 // khai báo để sử dụng DI
 builder.Services.AddSingleton(database);
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();

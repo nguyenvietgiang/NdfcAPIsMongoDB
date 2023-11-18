@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
+using NdfcAPIsMongoDB.Common.PagingComon;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.PlayerService;
 using System;
@@ -10,56 +11,17 @@ public class PlayerRepository : IPlayerRepository
 {
     private readonly IMongoCollection<Player> _playerCollection;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public PlayerRepository(IMongoDatabase database, IHttpContextAccessor httpContextAccessor)
+    private readonly IPagingComon _pagingComon;
+    public PlayerRepository(IMongoDatabase database, IHttpContextAccessor httpContextAccessor, IPagingComon pagingComon)
     {
         _playerCollection = database.GetCollection<Player>("Player");
         _httpContextAccessor = httpContextAccessor;
+        _pagingComon = pagingComon;
     }
 
     public async Task<Respaging<Player>> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
     {
-        var filter = Builders<Player>.Filter.Empty;
-
-        if (pageNumber <= 0)
-        {
-            pageNumber = 1;
-        }
-
-        // Tìm kiếm theo tên nếu có giá trị searchName được cung cấp
-        if (!string.IsNullOrEmpty(searchName))
-        {
-            filter = Builders<Player>.Filter.Regex(x => x.Name, new BsonRegularExpression(searchName, "i"));
-        }
-
-        // Thêm đoạn mã sau vào để bỏ qua điều kiện tìm kiếm khi searchName không được cung cấp
-        if (string.IsNullOrEmpty(searchName))
-        {
-            filter = Builders<Player>.Filter.Empty;
-        }
-
-        // Đếm tổng số bản ghi
-        var totalRecords = await _playerCollection.CountDocumentsAsync(filter);
-
-        // Phân trang và lấy dữ liệu
-        var players = await _playerCollection.Find(filter)
-            .Skip((pageNumber - 1) * pageSize)
-            .Limit(pageSize)
-            .ToListAsync();
-
-        // Tính toán số trang
-        var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-
-        // Tạo đối tượng Respaging để trả về
-        var respaging = new Respaging<Player>
-        {
-            currentPage = pageNumber,
-            totalPages = totalPages,
-            pageSize = pageSize,
-            totalRecords = (int)totalRecords,
-            content = players
-        };
-
-        return respaging;
+        return await _pagingComon.GetAllData<Player>(pageNumber, pageSize, searchName);
     }
 
 

@@ -8,6 +8,8 @@ namespace NdfcAPIsMongoDB.Common
         public int totalPages { get; set; }
         public int pageSize { get; set; } 
         public int totalRecords { get; set; }
+        public string next { get; set; }
+        public string prev { get; set; }
         public List<T> content { get; set; }
     }
 }
