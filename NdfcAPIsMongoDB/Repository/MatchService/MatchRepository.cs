@@ -115,5 +115,13 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
 
             return match;
         }
+
+        public async Task<IEnumerable<Seat>> GetSeatsForMatch(string matchId)
+        {
+            var filter = Builders<Seat>.Filter.Eq("MatchId", matchId);
+            var seats = await _seatCollection.Find(filter).ToListAsync();
+            return seats;
+        }
+
     }
 }

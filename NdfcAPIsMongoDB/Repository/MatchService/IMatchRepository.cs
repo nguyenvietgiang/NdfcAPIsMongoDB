@@ -11,6 +11,8 @@ namespace NdfcAPIsMongoDB.Repository.MatchService
 
         Task<bool> DeleteMatch(string id);
 
-        Task<Match> CreateMatch(Match match); 
+        Task<Match> CreateMatch(Match match);
+
+        Task<IEnumerable<Seat>> GetSeatsForMatch(string matchId);
     }
 }

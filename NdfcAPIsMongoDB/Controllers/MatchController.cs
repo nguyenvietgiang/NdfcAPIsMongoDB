@@ -99,5 +99,24 @@ namespace NdfcAPIsMongoDB.Controllers
 
             return NoContent();
         }
+
+
+        /// <summary>
+        /// get all seat of a match
+        /// </summary>
+        [HttpGet("{id}/seats")]
+        public async Task<ActionResult<IEnumerable<Seat>>> GetSeatsForMatch(string id)
+        {
+            var match = await _matchRepository.GetMatchById(id);
+
+            if (match == null)
+            {
+                return NotFound();
+            }
+
+            var seats = await _matchRepository.GetSeatsForMatch(id);
+
+            return Ok(seats);
+        }
     }
 }

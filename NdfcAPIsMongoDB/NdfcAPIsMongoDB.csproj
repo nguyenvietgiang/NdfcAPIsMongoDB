@@ -40,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Common\WordTemplate\" />
-    <Folder Include="Repository\TiketService\" />
     <Folder Include="uploads\" />
   </ItemGroup>
 

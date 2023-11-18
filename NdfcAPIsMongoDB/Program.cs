@@ -31,6 +31,7 @@ using NdfcAPIsMongoDB.Common.EmailService;
 using NdfcAPIsMongoDB.Middleware;
 using NdfcAPIsMongoDB.Common.ElasticSearch;
 using NdfcAPIsMongoDB.Repository.SubscribService;
+using NdfcAPIsMongoDB.Repository.TiketService;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -135,6 +136,7 @@ builder.Services.AddScoped<ISliderRepository, SliderRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<IContact,ContactRepository>();
 builder.Services.AddScoped<IHistoryRepositorycs, HistoryRepository>();
