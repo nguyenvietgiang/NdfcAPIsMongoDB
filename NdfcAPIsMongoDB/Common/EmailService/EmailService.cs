@@ -56,7 +56,7 @@ namespace NdfcAPIsMongoDB.Common.EmailService
             using (var client = new SmtpClient())
             {
                 client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("nguyenvietgiang1110@gmail.com", "kholeeizbmxzykbs");
+                client.Authenticate("nguyenvietgiang1110@gmail.com", "********");
                 client.Send(message);
                 client.Disconnect(true);
             }
@@ -130,7 +130,7 @@ namespace NdfcAPIsMongoDB.Common.EmailService
             using (var client = new SmtpClient())
             {
                 client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("nguyenvietgiang1110@gmail.com", "kholeeizbmxzykbs");
+                client.Authenticate("nguyenvietgiang1110@gmail.com", "********");
                 client.Send(message);
                 client.Disconnect(true);
             }
