@@ -2,9 +2,13 @@
 using NdfcAPIsMongoDB.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Syncfusion.Drawing;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Data;
 using static NdfcAPIsMongoDB.FileService.ExcelService;
 using static System.Net.Mime.MediaTypeNames;
+using Nest;
 
 namespace NdfcAPIsMongoDB.FileService
 {
@@ -35,21 +39,39 @@ namespace NdfcAPIsMongoDB.FileService
                     var collection = database.GetCollection<Player>("Player");
                     var documents = collection.Find(new BsonDocument()).ToList();
                     int rowIndex = 1;
+
                     worksheet.Range["A1"].Text = "Họ Tên";
                     worksheet.Range["B1"].Text = "Chức vụ";
                     worksheet.Range["C1"].Text = "Vị trí";
                     worksheet.Range["D1"].Text = "Tình trạng";
                     worksheet.Range["E1"].Text = "Số bàn thắng";
+                    worksheet.Range["F1"].Text = "Ảnh";
                     foreach (var item in documents)
                     {
                         rowIndex++;
+
                         worksheet.Range[$"A{rowIndex}"].Text = item.Name;
                         worksheet.Range[$"B{rowIndex}"].Text = item.Role;
                         worksheet.Range[$"C{rowIndex}"].Text = item.Position;
                         worksheet.Range[$"D{rowIndex}"].Text = item.Status;
                         worksheet.Range[$"E{rowIndex}"].Number = item.Scrored;
+
+                        // Lấy hình ảnh từ URL và thêm vào ô trong Excel
+                        if (!string.IsNullOrEmpty(item.sImg))
+                        {
+                            using (System.Net.WebClient webClient = new System.Net.WebClient())
+                            {
+                                byte[] imageData = webClient.DownloadData(item.sImg);
+                                MemoryStream ms = new MemoryStream(imageData);
+
+                                IPictureShape picture = worksheet.Pictures.AddPicture(rowIndex, 5, ms); // Thêm hình ảnh vào cột "Ảnh"
+                                picture.Width = 40;
+                                picture.Height = 40;
+                            }
+                        }
                     }
                 }
+
                 else if (collectionType == "Match")
                 {
                     var collection = database.GetCollection<Match>("Match");
@@ -189,7 +211,13 @@ namespace NdfcAPIsMongoDB.FileService
                 }
             }
         }
-        
+
+        private string GetImagePath(string fileName)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+            return Path.Combine(uploadsFolder, fileName);
+        }
+
     }
 }
 
