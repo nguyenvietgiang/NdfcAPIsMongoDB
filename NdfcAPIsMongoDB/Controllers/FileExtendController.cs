@@ -5,6 +5,8 @@ using NdfcAPIsMongoDB.FileService;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf;
 using Syncfusion.Drawing;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIORenderer;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -133,6 +135,41 @@ namespace NdfcAPIsMongoDB.Controllers
                 return File(stream, "application/pdf", "invitation.pdf");
             }
         }
+
+        /// <summary>
+        /// use for convert word file to pdf - no auth
+        /// </summary>
+        [HttpPost("word-to-pdf")]
+        public async Task<IActionResult> ConvertWordToPdf(IFormFile wordFile)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await wordFile.CopyToAsync(stream);
+                    stream.Position = 0;
+                    WordDocument document = new WordDocument(stream, Syncfusion.DocIO.FormatType.Automatic);
+
+                    // Tạo đối tượng DocIORenderer để chuyển đổi tài liệu Word sang PDF
+                    using (DocIORenderer renderer = new DocIORenderer())
+                    {
+                        PdfDocument pdfDocument = renderer.ConvertToPDF(document);
+
+                        using (MemoryStream pdfStream = new MemoryStream())
+                        {
+                            pdfDocument.Save(pdfStream);
+                            pdfStream.Position = 0;
+                            return File(pdfStream.ToArray(), "application/pdf", "converted.pdf");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
 
