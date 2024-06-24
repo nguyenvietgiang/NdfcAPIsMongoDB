@@ -1,8 +1,24 @@
 version: '3.4'
 
 services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27018:27017" # Change the default MongoDB port to 27018
+
   ndfcapismongodb:
     image: ${DOCKER_REGISTRY-}ndfcapismongodb
     build:
       context: .
       dockerfile: NdfcAPIsMongoDB/Dockerfile
+    ports:
+      - "5107:5107"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDB__ConnectionString=mongodb://root:example@mongo:27017 # Use the MongoDB service name and default port inside the Docker network
+    depends_on:
+      - mongo
