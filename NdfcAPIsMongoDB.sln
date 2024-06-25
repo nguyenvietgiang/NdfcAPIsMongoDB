@@ -9,7 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{31294401-D8CF-4153-BDE5-90E3517011E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NdfcAPIsMongoDB.Tests", "NdfcAPIsMongoDB.Tests\NdfcAPIsMongoDB.Tests.csproj", "{CA37FE99-25B7-45B9-8751-775A162A04DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NdfcAPIsMongoDB.Tests", "NdfcAPIsMongoDB.Tests\NdfcAPIsMongoDB.Tests.csproj", "{CA37FE99-25B7-45B9-8751-775A162A04DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{89C99A67-8792-4894-8FD3-B50384AC5B1A}"
+	ProjectSection(SolutionItems) = preProject
+		DockerSetting.txt = DockerSetting.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
