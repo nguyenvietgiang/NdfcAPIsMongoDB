@@ -33,6 +33,7 @@ using NdfcAPIsMongoDB.Common.ElasticSearch;
 using NdfcAPIsMongoDB.Repository.SubscribService;
 using NdfcAPIsMongoDB.Repository.TiketService;
 using NdfcAPIsMongoDB.Common.PagingComon;
+using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -40,7 +41,7 @@ var connectionString = builder.Configuration.GetConnectionString("MongoDBConnect
 var mongoClient = new MongoClient(connectionString);
 var databaseName = builder.Configuration.GetValue<string>("DatabaseSettings:DatabaseName");
 var database = mongoClient.GetDatabase(databaseName);
-// logging
+// log vào file cứng
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error) 
@@ -48,6 +49,18 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File(new JsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
    // .WriteTo.Sink(new MongoDBSink(database, "LogEntries"))
     .CreateLogger();
+
+// log vào elk stack
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+            .Enrich.FromLogContext()
+            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = "logstash-{0:yyyy.MM.dd}"
+            })
+            .CreateLogger();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
