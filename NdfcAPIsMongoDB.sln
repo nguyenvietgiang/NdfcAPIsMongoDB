@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{89C99A67-8792-4894-8FD3-B50384AC5B1A}"
 	ProjectSection(SolutionItems) = preProject
 		DockerSetting.txt = DockerSetting.txt
+		ElkStack.txt = ElkStack.txt
 	EndProjectSection
 EndProject
 Global

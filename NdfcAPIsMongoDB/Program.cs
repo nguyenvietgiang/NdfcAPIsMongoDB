@@ -34,6 +34,7 @@ using NdfcAPIsMongoDB.Repository.SubscribService;
 using NdfcAPIsMongoDB.Repository.TiketService;
 using NdfcAPIsMongoDB.Common.PagingComon;
 using Serilog.Sinks.Elasticsearch;
+using NdfcAPIsMongoDB.Repository.LogService;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -141,6 +142,7 @@ builder.Services.AddGraphQLServer()
 
 // khai báo mã syncfusion phục vụ nhập/xuất file-extend
 SyncfusionLicenseProvider.RegisterLicense("MTQwNUAzMTM4MmUzNDJlMzBGT29sdENza2kyME1jUHpPNVd5enVXY1AvNVZ1SVdPQlVMNUE4R1c1M0FvPQ==");
+builder.Services.AddSingleton<LogService>();
 // phân trang
 builder.Services.AddScoped<IPagingComon, PagingCommon>();
 // khai báo để sử dụng DI

@@ -1,0 +1,1 @@
+﻿Xem log này tại: http://localhost:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:e2bce020-3566-11ef-9b2a-bf0d71e01c0d,interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc)))
