@@ -79,8 +79,15 @@ builder.Services.AddHttpContextAccessor();
 // thêm cấu hình để có thể truyền vào token
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "NDFC APIs",
+        Version = "v1",
+        Description = "Nam Dinh Football Club Management APIs",
+    });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+       
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
