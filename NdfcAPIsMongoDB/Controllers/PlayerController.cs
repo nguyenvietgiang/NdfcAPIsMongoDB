@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Common.ElasticSearch;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
@@ -26,10 +27,17 @@ namespace NdfcAPIsMongoDB.Controllers
         /// get all list of player - no auth
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
+        public async Task<ActionResult<ApiResponse<Respaging<Player>>>> GetAllPlayers(int pageNumber = 1, int pageSize = 10, string? searchName = null)
         {
-            var respaging = await _playerRepository.GetAllPlayers(pageNumber, pageSize, searchName);
-            return Ok(respaging);
+            try
+            {
+                var respaging = await _playerRepository.GetAllPlayers(pageNumber, pageSize, searchName);
+                return ApiOk(respaging);
+            }
+            catch (Exception ex)
+            {
+                return ApiException(ex);
+            }
         }
 
         /// <summary>

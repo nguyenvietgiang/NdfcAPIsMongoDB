@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NdfcAPIsMongoDB.Common;
 public class BaseController : ControllerBase
 {
     private readonly IMemoryCache _cache;
@@ -28,6 +29,33 @@ public class BaseController : ControllerBase
         return item;
     }
 
+    protected ActionResult<ApiResponse<T>> ApiOk<T>(T data, string message = "Thành công")
+    {
+        var response = new ApiResponse<T>
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Message = message,
+            Data = data
+        };
+        return Ok(response);
+    }
+
+    protected ActionResult ApiException(Exception ex)
+    {
+        _logger.LogError(ex, "An unhandled exception occurred.");
+        var errorResponse = new ErrorResponse
+        {
+            ErrorMessage = ex.Message,
+            StackTrace = ex.StackTrace
+        };
+        var response = new ApiResponse<ErrorResponse>
+        {
+            StatusCode = StatusCodes.Status500InternalServerError,
+            Message = "Đã xảy ra lỗi",
+            Data = errorResponse
+        };
+        return StatusCode(StatusCodes.Status500InternalServerError, response);
+    }
 
     protected void LogInformation(string message)
     {
