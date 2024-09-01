@@ -35,6 +35,9 @@ using NdfcAPIsMongoDB.Repository.TiketService;
 using NdfcAPIsMongoDB.Common.PagingComon;
 using Serilog.Sinks.Elasticsearch;
 using NdfcAPIsMongoDB.Repository.LogService;
+using NdfcAPIsMongoDB.Models;
+using MongoDB.Bson;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -138,6 +141,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = "my-ndfc",
             ValidAudience = "your-audience",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my-secret-key-123"))
+        };
+
+         options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var accountId = context.Principal.FindFirstValue("accountId");
+                var database = context.HttpContext.RequestServices.GetRequiredService<IMongoDatabase>();
+                var accountCollection = database.GetCollection<Account>("Account");
+
+                var objectId = ObjectId.Parse(accountId);
+                var account = await accountCollection.Find(a => a.Id == accountId).FirstOrDefaultAsync();
+
+                if (account != null && account.TokenInvalidatedAt.HasValue)
+                {
+                    var tokenIssuedAt = context.SecurityToken.ValidFrom;
+                    if (tokenIssuedAt < account.TokenInvalidatedAt.Value)
+                    {
+                        context.Fail("Token đã bị vô hiệu hóa.");
+                    }
+                }
+            }
         };
     });
 

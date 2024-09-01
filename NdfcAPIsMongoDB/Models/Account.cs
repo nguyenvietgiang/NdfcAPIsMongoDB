@@ -23,5 +23,7 @@ namespace NdfcAPIsMongoDB.Models
 
         [BsonElement("iStatus")]
         public int Status { get; set; }
+        
+        public DateTime? TokenInvalidatedAt { get; set; }
     }
 }

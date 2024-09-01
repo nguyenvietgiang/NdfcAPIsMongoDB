@@ -52,6 +52,8 @@ namespace NdfcAPIsMongoDB.Controllers
                 // So sánh mật khẩu đã mã hóa với mật khẩu đã lưu trữ
                 if (hashedPassword == user.Password)
                 {
+                    var update = Builders<Account>.Update.Set(a => a.TokenInvalidatedAt, null);
+                    await _accountCollection.UpdateOneAsync(a => a.Id == user.Id, update);
                     // Tạo refresh token
                     var refreshToken = new RefreshToken
                     {
@@ -340,14 +342,14 @@ namespace NdfcAPIsMongoDB.Controllers
                 var filter = Builders<Account>.Filter.Eq("_id", objectId);
                 var result = await _accountCollection.DeleteOneAsync(filter);
             }
-           return Ok();
+            return Ok();
         }
 
         /// <summary>
         /// patch account 
         /// </summary>
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAccount(string id,JsonPatchDocument<Account> patchDocument)
+        public async Task<IActionResult> UpdateAccount(string id, JsonPatchDocument<Account> patchDocument)
         {
             if (patchDocument == null)
             {
@@ -540,6 +542,18 @@ namespace NdfcAPIsMongoDB.Controllers
             }
 
             return Ok("Trạng thái người dùng đã được thay đổi.");
+        }
+        /// <summary>
+        /// Revoke all tokens
+        /// </summary>
+        [HttpPost("revoke-all-tokens")]
+        [Authorize]
+        public async Task<IActionResult> RevokeAllTokens()
+        {
+            var update = Builders<Account>.Update.Set(a => a.TokenInvalidatedAt, DateTime.UtcNow);
+            var result = await _accountCollection.UpdateManyAsync(FilterDefinition<Account>.Empty, update);
+
+            return Ok($"Đã vô hiệu hóa token cho {result.ModifiedCount} tài khoản.");
         }
 
     }
