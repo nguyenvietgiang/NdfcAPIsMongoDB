@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace NdfcAPIsMongoDB.Models
 {
@@ -23,7 +23,7 @@ namespace NdfcAPIsMongoDB.Models
 
         [BsonElement("iStatus")]
         public int Status { get; set; }
-        
+
         public DateTime? TokenInvalidatedAt { get; set; }
     }
 }

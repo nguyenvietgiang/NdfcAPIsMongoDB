@@ -5,7 +5,6 @@ using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Common.PagingComon;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.PlayerService;
-using System;
 
 public class PlayerRepository : IPlayerRepository
 {

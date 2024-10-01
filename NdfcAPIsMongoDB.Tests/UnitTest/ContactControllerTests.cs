@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FakeItEasy;
 using FluentAssertions;
-using FakeItEasy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using NdfcAPIsMongoDB.Controllers;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.ContactService;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.Mvc;
 
 // Nên viết thế này để thực hiện test
 

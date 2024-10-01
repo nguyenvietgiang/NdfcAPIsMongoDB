@@ -9,12 +9,12 @@ namespace NdfcAPIsMongoDB.Controllers
     [ApiController]
     public class SliderController : BaseController
     {
-        private readonly ISliderRepository _sliderRepository; 
+        private readonly ISliderRepository _sliderRepository;
 
         public SliderController(ISliderRepository sliderRepository, IMemoryCache cache, ILogger<BaseController> logger)
         : base(cache, logger)
         {
-            _sliderRepository = sliderRepository; 
+            _sliderRepository = sliderRepository;
         }
 
         /// <summary>

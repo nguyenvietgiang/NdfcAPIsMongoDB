@@ -14,7 +14,7 @@
         var requestPath = context.Request.Path;
 
         string[] restrictedDomains = { "http://localhost:4200" };
-        string[] restrictedPaths = { "/v1/api/" }; 
+        string[] restrictedPaths = { "/v1/api/" };
 
         if (restrictedDomains.Contains(requestHost) && restrictedPaths.Any(path => requestPath.StartsWithSegments(path)))
         {

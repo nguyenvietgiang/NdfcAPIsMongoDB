@@ -1,43 +1,42 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
+using NdfcAPIsMongoDB.Common.ElasticSearch;
+using NdfcAPIsMongoDB.Common.EmailService;
+using NdfcAPIsMongoDB.Common.PagingComon;
 using NdfcAPIsMongoDB.FileService;
+using NdfcAPIsMongoDB.GraphQL;
+using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.ContactService;
+using NdfcAPIsMongoDB.Repository.HistoryService;
 using NdfcAPIsMongoDB.Repository.LeagueService;
+using NdfcAPIsMongoDB.Repository.LogService;
 using NdfcAPIsMongoDB.Repository.MatchService;
 using NdfcAPIsMongoDB.Repository.NewsService;
 using NdfcAPIsMongoDB.Repository.PlayerService;
 using NdfcAPIsMongoDB.Repository.ReportService;
 using NdfcAPIsMongoDB.Repository.SliderService;
+using NdfcAPIsMongoDB.Repository.SubscribService;
+using NdfcAPIsMongoDB.Repository.TiketService;
 using NdfcAPIsMongoDB.Repository.VideoService;
-using Syncfusion.Licensing;
-using System.Text;
+using NdfcAPIsMongoDB.Validators;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
-using System.Reflection;
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using NdfcAPIsMongoDB.Validators;
-using NdfcAPIsMongoDB.Models.DTO;
-using NdfcAPIsMongoDB.Repository.HistoryService;
-using NdfcAPIsMongoDB.GraphQL;
-using Hangfire;
-using Hangfire.MemoryStorage;
-using NdfcAPIsMongoDB.Common.EmailService;
-using NdfcAPIsMongoDB.Middleware;
-using NdfcAPIsMongoDB.Common.ElasticSearch;
-using NdfcAPIsMongoDB.Repository.SubscribService;
-using NdfcAPIsMongoDB.Repository.TiketService;
-using NdfcAPIsMongoDB.Common.PagingComon;
 using Serilog.Sinks.Elasticsearch;
-using NdfcAPIsMongoDB.Repository.LogService;
-using NdfcAPIsMongoDB.Models;
-using MongoDB.Bson;
+using Syncfusion.Licensing;
+using System.Reflection;
 using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 // chuỗi kn mongoDB
@@ -48,10 +47,10 @@ var database = mongoClient.GetDatabase(databaseName);
 // log vào file cứng
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) 
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
     .Enrich.FromLogContext()
     .WriteTo.File(new JsonFormatter(), "logs/log.txt", rollingInterval: RollingInterval.Day)
-   // .WriteTo.Sink(new MongoDBSink(database, "LogEntries"))
+    // .WriteTo.Sink(new MongoDBSink(database, "LogEntries"))
     .CreateLogger();
 
 // log vào elk stack
@@ -90,7 +89,7 @@ builder.Services.AddSwaggerGen(c =>
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-       
+
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
@@ -143,7 +142,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my-secret-key-123"))
         };
 
-         options.Events = new JwtBearerEvents
+        options.Events = new JwtBearerEvents
         {
             OnTokenValidated = async context =>
             {
@@ -188,7 +187,7 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ExcelService>();
-builder.Services.AddScoped<IContact,ContactRepository>();
+builder.Services.AddScoped<IContact, ContactRepository>();
 builder.Services.AddScoped<IHistoryRepositorycs, HistoryRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();

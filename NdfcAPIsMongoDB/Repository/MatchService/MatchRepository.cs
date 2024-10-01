@@ -2,14 +2,13 @@
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-using Syncfusion.XlsIO.Implementation;
 
 namespace NdfcAPIsMongoDB.Repository.MatchService
 {
     public class MatchRepository : IMatchRepository
     {
-        private readonly IMongoCollection<Match> _matchCollection; 
-        private readonly IMongoCollection<Seat> _seatCollection;  
+        private readonly IMongoCollection<Match> _matchCollection;
+        private readonly IMongoCollection<Seat> _seatCollection;
 
         public MatchRepository(IMongoDatabase database)
         {

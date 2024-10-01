@@ -10,17 +10,17 @@ namespace NdfcAPIsMongoDB.Controllers
     {
         [HttpPost]
         public async Task<IActionResult> UseChatGPT(string query)
-        { 
+        {
             string outputResult = "";
             var openai = new OpenAIAPI("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");
             CompletionRequest request = new CompletionRequest();
-            request.Prompt= query;
+            request.Prompt = query;
             request.Model = OpenAI_API.Models.Model.DavinciText;
 
             var completes = openai.Completions.CreateCompletionsAsync(request);
             foreach (var completion in completes.Result.Completions)
             {
-                outputResult+= completion.Text;
+                outputResult += completion.Text;
             }
             return Ok(outputResult);
         }

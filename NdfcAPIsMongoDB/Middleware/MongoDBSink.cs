@@ -15,12 +15,12 @@ namespace NdfcAPIsMongoDB.Middleware
 
         public void Emit(LogEvent logEvent)
         {
-            _logCollection.InsertOne(logEvent); 
+            _logCollection.InsertOne(logEvent);
         }
 
         public void Dispose()
         {
-            
+
         }
     }
 }

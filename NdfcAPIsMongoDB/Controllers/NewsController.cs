@@ -14,7 +14,7 @@ namespace NdfcAPIsMongoDB.Controllers
     {
         private readonly INewsRepository _NewsRepository;
         private readonly IEmailService _emailService;
-        public NewsController(INewsRepository NewsRepository, IEmailService emailService,IMemoryCache cache, ILogger<BaseController> logger)
+        public NewsController(INewsRepository NewsRepository, IEmailService emailService, IMemoryCache cache, ILogger<BaseController> logger)
         : base(cache, logger)
         {
             _NewsRepository = NewsRepository;
@@ -68,13 +68,13 @@ namespace NdfcAPIsMongoDB.Controllers
                 Description = newsDTO.Description,
                 Detail = newsDTO.Detail,
                 CreateOn = DateTime.Now,
-                Status =1 
+                Status = 1
             };
 
             // Truyền giá trị host từ HttpContext.Request.Host.ToString()
             var host = HttpContext.Request.Host.ToString();
             await _NewsRepository.CreateNew(news, newsDTO.Image, host);
-            string body = "CLB Nam Định vừa đăng một bài viết mới: "+ newsDTO.Title;
+            string body = "CLB Nam Định vừa đăng một bài viết mới: " + newsDTO.Title;
             _emailService.SendEmailsToAll(body);
             return Ok(news);
         }
@@ -107,7 +107,7 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpDelete("list-id")]
         public async Task<IActionResult> DeleteNews(List<string> ids)
         {
-            if (ids == null || ids.Count == 0) 
+            if (ids == null || ids.Count == 0)
             {
                 return BadRequest("List of IDs is required.");
             }

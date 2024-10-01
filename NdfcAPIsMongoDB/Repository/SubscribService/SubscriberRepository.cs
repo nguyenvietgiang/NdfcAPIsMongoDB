@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Common.PagingComon;
 using NdfcAPIsMongoDB.Models;
@@ -10,7 +9,7 @@ namespace NdfcAPIsMongoDB.Repository.SubscribService
     {
         private readonly IMongoCollection<Subscriber> _subCollection;
         private readonly IPagingComon _pagingComon;
-        public SubscriberRepository(IMongoDatabase database ,IPagingComon pagingComon)
+        public SubscriberRepository(IMongoDatabase database, IPagingComon pagingComon)
         {
             _subCollection = database.GetCollection<Subscriber>("Subscriber");
             _pagingComon = pagingComon;

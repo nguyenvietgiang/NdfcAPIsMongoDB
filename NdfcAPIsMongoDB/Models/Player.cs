@@ -28,7 +28,7 @@ public class Player
     [BsonElement("iRedCard")]
     public int RedCard { get; set; }
 
-    [BsonElement("iScrored")] 
+    [BsonElement("iScrored")]
     public int Scrored { get; set; }
 }
 

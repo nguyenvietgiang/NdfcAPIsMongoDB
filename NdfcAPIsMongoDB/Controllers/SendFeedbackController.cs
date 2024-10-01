@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Authorization;
-using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Common.EmailService;
 
 namespace NdfcAPIsMongoDB.Controllers
@@ -34,12 +34,12 @@ namespace NdfcAPIsMongoDB.Controllers
         [HttpPost("clubBirthday")]
         public IActionResult BirthDayEvent()
         {
-            try     
+            try
             {
                 // dập lịch gửi mail đến toàn bộ thành viên nhân ngày sinh nhật câu lạc bộ
                 RecurringJob.AddOrUpdate(() => _emailService.SendEmailsToAll("Chúc mừng sinh nhật"), "40 22 12 11 *");
                 return Ok("Emails sent to all subscribers.");
-            } 
+            }
             catch (Exception ex)
             {
                 return BadRequest("Failed to send emails: " + ex.Message);
@@ -96,7 +96,7 @@ namespace NdfcAPIsMongoDB.Controllers
             }
         }
 
-        
+
     }
 }
 

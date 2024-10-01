@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.SubscribService;
@@ -14,7 +12,7 @@ namespace NdfcAPIsMongoDB.Controllers
         private readonly ISubscriberRepository _SubscriberRepository;
 
         public SubcribeController(ISubscriberRepository SubscriberRepository)
-        { 
+        {
             _SubscriberRepository = SubscriberRepository;
         }
 

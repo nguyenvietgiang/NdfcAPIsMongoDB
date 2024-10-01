@@ -1,5 +1,5 @@
-﻿using MimeKit;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
 

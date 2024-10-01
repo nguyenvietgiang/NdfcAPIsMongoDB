@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-using System.Numerics;
 
 namespace NdfcAPIsMongoDB.Repository.ContactService
 {

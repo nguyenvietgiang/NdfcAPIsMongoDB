@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NdfcAPIsMongoDB.Repository.LogService;
 
 namespace NdfcAPIsMongoDB.Controllers

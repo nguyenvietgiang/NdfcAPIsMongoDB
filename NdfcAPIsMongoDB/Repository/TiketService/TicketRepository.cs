@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
-using Nest;
 
 namespace NdfcAPIsMongoDB.Repository.TiketService
 {

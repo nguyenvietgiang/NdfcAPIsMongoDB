@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using NdfcAPIsMongoDB.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using NdfcAPIsMongoDB.Models.DTO;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
+using System.Security.Claims;
 
 namespace NdfcAPIsMongoDB.Controllers
 {
@@ -28,7 +28,7 @@ namespace NdfcAPIsMongoDB.Controllers
         public ActionResult<List<Commnet>> GetCommentsByPostId(string postId)
         {
             var objectId = ObjectId.Parse(postId);
-            var filter = Builders<Commnet>.Filter.Eq(c =>c.PostId, objectId.ToString());
+            var filter = Builders<Commnet>.Filter.Eq(c => c.PostId, objectId.ToString());
             var comments = _commentsCollection.Find(filter).ToList();
             return comments;
         }

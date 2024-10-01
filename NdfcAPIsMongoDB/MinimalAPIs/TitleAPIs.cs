@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
-using Nest;
-using System.Threading.Tasks;
 
 namespace NdfcAPIsMongoDB.MinimalAPIs
 {

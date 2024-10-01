@@ -78,8 +78,8 @@ namespace NdfcAPIsMongoDB.Controllers
                 Role = playerDto.sRole,
                 Position = playerDto.sPosition,
                 Status = "Bình thường",
-                Scrored =0,
-                RedCard =0
+                Scrored = 0,
+                RedCard = 0
             };
 
             // Truyền giá trị host từ HttpContext.Request.Host.ToString()

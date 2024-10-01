@@ -43,7 +43,7 @@ namespace NdfcAPIsMongoDB.Controllers
         [Authorize(Roles = "Admin")] // chỉ có admin mới được xóa
         public async Task<IActionResult> DeleteMessage(string messageId)
         {
-           
+
             var deleteResult = await _chatMessages.DeleteOneAsync(message => message.Id == messageId);
 
             if (deleteResult.DeletedCount > 0)

@@ -1,14 +1,7 @@
-﻿using Syncfusion.XlsIO;
-using NdfcAPIsMongoDB.Models;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Syncfusion.Drawing;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Data;
-using static NdfcAPIsMongoDB.FileService.ExcelService;
-using static System.Net.Mime.MediaTypeNames;
-using Nest;
+using NdfcAPIsMongoDB.Models;
+using Syncfusion.XlsIO;
 
 namespace NdfcAPIsMongoDB.FileService
 {
@@ -204,7 +197,7 @@ namespace NdfcAPIsMongoDB.FileService
             string templateFilePath = Path.Combine(_commonFolderPath, "WordTemplate", templateName + ".docx");
             using (FileStream fileStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
             {
-                using (MemoryStream stream = new MemoryStream()) 
+                using (MemoryStream stream = new MemoryStream())
                 {
                     fileStream.CopyTo(stream);
                     return stream.ToArray();

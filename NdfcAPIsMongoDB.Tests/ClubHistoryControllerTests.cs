@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FakeItEasy;
 using FluentAssertions;
-using FakeItEasy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Controllers;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Repository.HistoryService;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Xunit;
-using NdfcAPIsMongoDB.Common;
 
 namespace NdfcAPIsMongoDB.Tests.UnitTest
 {

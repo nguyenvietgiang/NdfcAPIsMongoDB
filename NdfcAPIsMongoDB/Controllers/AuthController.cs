@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Models;
 using NdfcAPIsMongoDB.Models.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Security.Cryptography;
-using MimeKit;
-using MailKit.Net.Smtp;
+using System.Text;
 
 namespace NdfcAPIsMongoDB.Controllers
 {

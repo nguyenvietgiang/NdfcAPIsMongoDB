@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using NdfcAPIsMongoDB.Common;
 using NdfcAPIsMongoDB.Models;
-using System.Text.RegularExpressions;
 
 namespace NdfcAPIsMongoDB.Repository.SliderService
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Models;
+using NdfcAPIsMongoDB.Models.DTO;
 using NdfcAPIsMongoDB.Repository.LeagueService;
 
 namespace NdfcAPIsMongoDB.Controllers

@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace NdfcAPIsMongoDB.Models
 {
@@ -14,7 +14,7 @@ namespace NdfcAPIsMongoDB.Models
 
         [BsonElement("sDes")]
         public string Description { get; set; }
-         
+
         [BsonElement("sSeason")]
         public string Season { get; set; }
     }
