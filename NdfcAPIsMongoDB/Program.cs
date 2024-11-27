@@ -29,6 +29,7 @@ using NdfcAPIsMongoDB.Repository.SubscribService;
 using NdfcAPIsMongoDB.Repository.TiketService;
 using NdfcAPIsMongoDB.Repository.VideoService;
 using NdfcAPIsMongoDB.Validators;
+using Prometheus;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -229,6 +230,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// truy cập vào http://localhost:5107/metrics và cần thêm grafana cho UI hệ thống
+app.UseMetricServer();
+app.UseHttpMetrics();
 
 app.UseEndpoints(endpoints =>
 {
